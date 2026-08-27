@@ -347,7 +347,7 @@ ORDER BY e.score DESC, s.name ASC;</code></pre>
               <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th><th>score</th><th>status</th><th>department</th></tr></thead><tbody><tr><td>Bob</td><td>90</td><td>Pass (High)</td><td>CS</td></tr><tr><td>Ann</td><td>85</td><td>Pass (High)</td><td>CS</td></tr><tr><td>Bob</td><td>72</td><td>Pass</td><td>CS</td></tr></tbody></table>
             </div>
             <div class="logic-order" aria-label="ลำดับประมวลผล SQL"><span>FROM/JOIN</span><span>WHERE</span><span>GROUP BY</span><span>HAVING</span><span>SELECT</span><span>DISTINCT</span><span>ORDER BY</span></div>
-            <p class="note note--blue"><span class="rule">จำ:</span> <code class="inline">BETWEEN x AND y</code> รวมขอบ · <code class="inline">IN ('a','b')</code> เทียบหลายค่า · <code class="inline">LIKE 'D%'</code> ขึ้นต้นด้วย D, <code class="inline">'_'</code> แทน 1 ตัว · AND ทำก่อน OR (ใส่วงเล็บเสมอ) · <code class="inline">COALESCE(x, fallback)</code> คืนค่าแรกที่ไม่เป็น NULL</p>
+            <p class="note note--blue"><span class="rule">จำ:</span> <code class="inline">BETWEEN x AND y</code> รวมขอบ · <code class="inline">IN ('a','b')</code> เทียบหลายค่า · <code class="inline">LIKE 'D%'</code> ขึ้นต้นด้วย D, <code class="inline">'_'</code> แทน 1 ตัว · AND ทำก่อน OR (ใส่วงเล็บเสมอ) · <code class="inline">COALESCE(x, fallback)</code> คืนค่าแรกที่ไม่ NULL · ฟังก์ชันเสริม: <code class="inline">UPPER()</code>, <code class="inline">LOWER()</code>, <code class="inline">LENGTH()</code>, <code class="inline">ROUND(x,2)</code></p>
           </section>
 
           <section class="block">
@@ -405,44 +405,48 @@ ORDER BY avg_score DESC;</code></pre>
           <section class="block">
             <h2>5. SUBQUERY, CTE &amp; MODIFICATIONS</h2>
             <div class="query-case">
-              <p class="query-title">Subquery ใน WHERE และ Correlated Subquery</p>
-              <pre><code>-- IN: อยู่ในชุดคำตอบ
-SELECT name FROM Student WHERE sid IN (
+              <p class="query-title">IN: สมาชิกอยู่ในชุดคำตอบจาก Subquery</p>
+              <pre><code>SELECT name FROM Student WHERE sid IN (
   SELECT sid FROM Enroll WHERE score &gt;= 80
-);
--- Correlated Subquery: อ้างอิงแถวด้านนอก (outer table)
-SELECT s.name FROM Student s WHERE EXISTS (
-  SELECT 1 FROM Enroll e WHERE e.sid = s.sid AND e.score &gt; 75
 );</code></pre>
+              <table class="result"><caption>ผลลัพธ์ IN</caption><thead><tr><th>name</th></tr></thead><tbody><tr><td>Bob</td></tr><tr><td>Ann</td></tr></tbody></table>
+            </div>
+            <div class="query-case">
+              <p class="query-title">NOT EXISTS: อ้างอิงตารางนอก (Correlated)</p>
+              <pre><code>SELECT s.name FROM Student s WHERE NOT EXISTS (
+  SELECT 1 FROM Enroll e WHERE e.sid = s.sid
+);</code></pre>
+              <table class="result"><caption>ผลลัพธ์ NOT EXISTS</caption><thead><tr><th>name</th></tr></thead><tbody><tr><td>Dan</td></tr></tbody></table>
             </div>
             <p><code class="inline">x &gt; ANY(S)</code> มากกว่าอย่างน้อย 1 ค่า · <code class="inline">x &gt; ALL(S)</code> มากกว่าทุกค่า · CTE: <code class="inline">WITH t AS (SELECT ...) SELECT ...</code></p>
             <p class="note note--red"><span class="warn">กับดัก:</span> <code class="inline">NOT IN</code> เจอ NULL ใน Subquery จะคืนค่าว่าง ให้ใช้ <code class="inline">NOT EXISTS</code> ปลอดภัยกว่า</p>
             <div class="query-case">
               <p class="query-title">Database Modification ด้วย Subquery</p>
-              <pre><code>INSERT INTO high_scores SELECT sid, cid, score FROM Enroll WHERE score &gt;= 85;
+              <pre><code>INSERT INTO honors SELECT sid, cid, score FROM Enroll WHERE score &gt;= 85;
 DELETE FROM Enroll WHERE cid IN (SELECT cid FROM Course WHERE fee &gt; 2800);
 UPDATE Student SET dept = 'ENG' WHERE sid IN (SELECT sid FROM Enroll WHERE cid='C1');</code></pre>
             </div>
           </section>
 
           <section class="block">
-            <h2>6. DDL, VIEWS, INDEX &amp; AUTHORIZATION</h2>
-            <pre><code>-- Table &amp; Constraints
+            <h2>6. DDL, CONSTRAINTS, VIEWS &amp; AUTH</h2>
+            <table><thead><tr><th>Constraint</th><th>ป้องกัน / ผลกระทบ</th></tr></thead><tbody><tr><td><strong>PRIMARY KEY</strong></td><td>ห้ามซ้ำ + ห้าม NULL (ระบุแถวหลัก)</td></tr><tr><td><strong>FOREIGN KEY</strong></td><td>ป้องกันการอ้าง Parent ที่ไม่มีจริง (Referential Integrity)</td></tr><tr><td><strong>UNIQUE</strong></td><td>ป้องกันค่าซ้ำ (ยอมรับค่า NULL ได้)</td></tr><tr><td><strong>NOT NULL</strong></td><td>บังคับต้องมีค่าเสมอ</td></tr><tr><td><strong>CHECK</strong></td><td>จำกัดช่วงค่า เช่น <code class="inline">CHECK(score BETWEEN 0 AND 100)</code></td></tr></tbody></table>
+            <pre><code>-- CREATE TABLE พร้อม Constraints
 CREATE TABLE Enroll (
   sid INT, cid CHAR(2), score DECIMAL(5,2) CHECK(score BETWEEN 0 AND 100),
   PRIMARY KEY (sid, cid),
   FOREIGN KEY (sid) REFERENCES Student(sid) ON DELETE CASCADE,
   FOREIGN KEY (cid) REFERENCES Course(cid)
 );
--- Views: CREATE VIEW name AS ... (Updatable: 1 ตาราง, ห้ามมี aggregate/distinct/group by)
+-- Updatable View: 1 ตาราง, ไม่มี aggregate/distinct/group by
 CREATE VIEW cs_students AS SELECT sid, name FROM Student WHERE dept='CS';
-DROP VIEW IF EXISTS cs_students;
--- Index: B-Tree ค้นหา O(log N) แทน Full Scan O(N) (สร้างบน WHERE, JOIN, ORDER BY)
+-- Index: B-Tree ค้นหา O(log N) แทน Full Scan O(N) บน WHERE/JOIN
 CREATE INDEX idx_stu_dept ON Student(dept);
--- Authorization: สิทธิ์และการส่งต่อ
-GRANT SELECT, INSERT ON Course TO student_role;
+-- Authorization: GRANT สิทธิ์ และ REVOKE สิทธิ์
+GRANT SELECT ON Course TO student_role;
 GRANT UPDATE(score) ON Enroll TO instructor_role WITH GRANT OPTION;
-REVOKE INSERT ON Course FROM student_role;</code></pre>
+REVOKE SELECT ON Course FROM student_role;
+-- Transactions (ACID): START TRANSACTION; ... COMMIT; หรือ ROLLBACK;</code></pre>
           </section>
         </div>
       </div>
