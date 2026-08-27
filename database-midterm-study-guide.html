@@ -63,29 +63,81 @@
       min-height: 64px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 16px;
       padding: 10px 22px;
       color: white;
       background: var(--ink);
       box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
     }
     .toolbar__brand {
-      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      text-decoration: none;
       font-family: var(--condensed);
       font-weight: 800;
       letter-spacing: -.02em;
       white-space: nowrap;
+      flex-shrink: 0;
     }
-    .search-box { position: relative; width: min(420px, 42vw); }
+    .toolbar__badge {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--yellow);
+      border-radius: 4px;
+      letter-spacing: 0;
+    }
+    .toolbar__nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .toolbar__nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 6px 12px;
+      color: #dce6f4;
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: background .15s ease, color .15s ease;
+    }
+    .toolbar__nav-link:hover {
+      color: white;
+      background: rgba(255, 255, 255, .12);
+    }
+    .toolbar__nav-link[aria-current="page"] {
+      color: var(--ink);
+      background: var(--yellow);
+      font-weight: 800;
+    }
+    .toolbar__tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+    .search-box { position: relative; width: min(340px, 30vw); }
     .search-box input {
       width: 100%;
-      min-height: 42px;
-      padding: 8px 104px 8px 14px;
+      min-height: 40px;
+      padding: 8px 100px 8px 14px;
       color: var(--ink);
       background: white;
       border: 0;
       border-radius: 8px;
       caret-color: var(--blue);
+      font-size: .88rem;
     }
     .search-status {
       position: absolute;
@@ -98,13 +150,15 @@
       pointer-events: none;
     }
     .tool-button {
-      min-height: 42px;
+      min-height: 40px;
       padding: 8px 13px;
       color: white;
       background: transparent;
       border: 1px solid #8795aa;
       border-radius: 8px;
       font-weight: 700;
+      font-size: .86rem;
+      white-space: nowrap;
     }
     .tool-button:hover { background: #233854; border-color: white; }
 
@@ -379,11 +433,18 @@
       .mobile-toc { display: block; }
       .content { width: min(940px, calc(100% - 32px)); }
     }
+    @media (max-width: 990px) {
+      .toolbar { flex-wrap: wrap; padding: 10px 14px; gap: 10px; }
+      .toolbar__brand { order: 1; }
+      .toolbar__nav { order: 2; }
+      .toolbar__tools { order: 3; width: 100%; justify-content: space-between; }
+      .search-box { flex: 1; width: auto; min-width: 160px; }
+    }
     @media (max-width: 760px) {
-      html { scroll-padding-top: 126px; }
-      .toolbar { flex-wrap: wrap; padding: 9px 12px; }
-      .toolbar__brand { width: 100%; }
-      .search-box { flex: 1; width: auto; min-width: 180px; }
+      html { scroll-padding-top: 156px; }
+      .toolbar__brand { width: 100%; justify-content: space-between; }
+      .toolbar__nav { width: 100%; justify-content: space-between; overflow-x: auto; }
+      .toolbar__nav-link { padding: 5px 8px; font-size: .82rem; }
       .tool-button--expand { display: none; }
       .hero { min-height: auto; padding: 48px 20px 42px; }
       .hero h1 { font-size: clamp(2.75rem, 15vw, 4.7rem); }
@@ -451,15 +512,34 @@
   FORM: Engineering fault-isolation handbook, grounded direction 7, seed 543febcb.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
   -->
-  <header class="toolbar" aria-label="เครื่องมืออ่านเอกสาร">
-    <div class="toolbar__brand">DB MIDTERM / SERVICE MANUAL</div>
-    <label class="search-box">
-      <span class="sr-only" hidden>ค้นหาในสรุป</span>
-      <input id="searchInput" type="search" placeholder="ค้นหา เช่น HAVING, candidate key, M:N" autocomplete="off">
-      <span class="search-status" id="searchStatus" aria-live="polite">พร้อมค้นหา</span>
-    </label>
-    <button class="tool-button tool-button--expand" id="expandAll" type="button">เปิดเฉลยทั้งหมด</button>
-    <button class="tool-button" id="printGuide" type="button">พิมพ์ / PDF</button>
+  <header class="toolbar" aria-label="เครื่องมืออ่านเอกสารและแถบนำทาง">
+    <a href="index.html" class="toolbar__brand">
+      <span>DB MIDTERM</span>
+      <span class="toolbar__badge">MANUAL</span>
+    </a>
+    <nav class="toolbar__nav" aria-label="เมนูหลัก">
+      <a href="index.html" class="toolbar__nav-link" title="กลับหน้าหลัก">
+        <span>🏠</span>
+        <span class="toolbar__nav-text">หน้าหลัก</span>
+      </a>
+      <a href="database-midterm-study-guide.html" class="toolbar__nav-link" aria-current="page" title="คู่มืออ่านสอบฉบับเต็ม">
+        <span>📖</span>
+        <span class="toolbar__nav-text">คู่มือฉบับเต็ม</span>
+      </a>
+      <a href="cheat-sheet.html" class="toolbar__nav-link" title="แผ่นสรุปย่อ A4">
+        <span>📑</span>
+        <span class="toolbar__nav-text">A4 Cheat Sheet</span>
+      </a>
+    </nav>
+    <div class="toolbar__tools">
+      <label class="search-box">
+        <span class="sr-only" hidden>ค้นหาในสรุป</span>
+        <input id="searchInput" type="search" placeholder="ค้นหา เช่น HAVING, candidate key, M:N" autocomplete="off">
+        <span class="search-status" id="searchStatus" aria-live="polite">พร้อมค้นหา</span>
+      </label>
+      <button class="tool-button tool-button--expand" id="expandAll" type="button">เปิดเฉลยทั้งหมด</button>
+      <button class="tool-button" id="printGuide" type="button">พิมพ์ / PDF</button>
+    </div>
   </header>
 
   <div class="layout">
@@ -467,19 +547,21 @@
       <h2>สารบัญคู่มือ</h2>
       <nav id="sideNav">
         <a href="#exam-map">แผนสอบและแผนอ่าน</a>
-        <a href="#dbms">พื้นฐาน Database &amp; DBMS</a>
+        <a href="#dbms">พื้นฐาน Database &amp; DBMS (25%)</a>
         <a href="#relational-model">Relational Model และ Keys</a>
         <a href="#relational-algebra">Relational Algebra</a>
-        <a href="#sql-foundation">SQL: โครงสร้างพื้นฐาน</a>
+        <a href="#sql-foundation">SQL: โครงสร้างพื้นฐาน (60%)</a>
         <a href="#sql-joins">SQL: Joins</a>
         <a href="#sql-null-set">SQL: NULL และ Set</a>
         <a href="#sql-aggregate">SQL: Aggregate</a>
-        <a href="#sql-subquery">SQL: Subquery</a>
+        <a href="#sql-subquery">SQL: Subquery &amp; Modifications</a>
+        <a href="#sql-advanced">SQL: Views, Index &amp; Auth</a>
         <a href="#integrity">Integrity Constraints</a>
-        <a href="#er-model">ER Modeling</a>
+        <a href="#er-model">ER Modeling (15%)</a>
         <a href="#er-conversion">ER → Relational Schema</a>
+        <a href="#bad-design">Design Anti-Patterns</a>
         <a href="#exam-tactics">กลยุทธ์ทำข้อสอบ</a>
-        <a href="#practice">โจทย์ทบทวนพร้อมเฉลย</a>
+        <a href="#practice">โจทย์ทบทวนพร้อมเฉลย (22 ข้อ)</a>
       </nav>
       <div class="rail__legend">
         <strong>สัดส่วนพื้นที่อ่าน</strong><br>
@@ -511,11 +593,11 @@
         <details class="mobile-toc">
           <summary>เปิดสารบัญ</summary>
           <nav>
-            <a href="#exam-map">แผนสอบและแผนอ่าน</a><a href="#dbms">Database &amp; DBMS</a><a href="#relational-model">Relational Model</a><a href="#relational-algebra">Relational Algebra</a><a href="#sql-foundation">SQL พื้นฐาน</a><a href="#sql-joins">Joins</a><a href="#sql-null-set">NULL / Set</a><a href="#sql-aggregate">Aggregate</a><a href="#sql-subquery">Subquery</a><a href="#integrity">Constraints</a><a href="#er-model">ER Modeling</a><a href="#er-conversion">ER Conversion</a><a href="#practice">โจทย์ทบทวน</a>
+            <a href="#exam-map">แผนสอบและแผนอ่าน</a><a href="#dbms">Database &amp; DBMS</a><a href="#relational-model">Relational Model</a><a href="#relational-algebra">Relational Algebra</a><a href="#sql-foundation">SQL พื้นฐาน</a><a href="#sql-joins">Joins</a><a href="#sql-null-set">NULL / Set</a><a href="#sql-aggregate">Aggregate</a><a href="#sql-subquery">Subquery</a><a href="#sql-advanced">Views / Index / Auth</a><a href="#integrity">Constraints</a><a href="#er-model">ER Modeling</a><a href="#er-conversion">ER Conversion</a><a href="#bad-design">Design Patterns</a><a href="#practice">โจทย์ทบทวน</a>
           </nav>
         </details>
 
-        <div class="empty-search" id="emptySearch" role="status">ไม่พบหัวข้อที่ตรงกับคำค้น ลองใช้คำสั้นลง เช่น <code>join</code>, <code>NULL</code>, <code>key</code> หรือ <code>cardinality</code></div>
+        <div class="empty-search" id="emptySearch" role="status">ไม่พบหัวข้อที่ตรงกับคำค้น ลองใช้คำสั้นลง เช่น <code>join</code>, <code>NULL</code>, <code>key</code>, <code>view</code>, <code>index</code> หรือ <code>cardinality</code></div>
 
         <section class="chapter search-unit" id="exam-map" data-tab="START HERE">
           <h2>อ่านอย่างไรให้คุ้มเวลาก่อนสอบ</h2>
@@ -612,9 +694,9 @@
           <label class="section-check"><input type="checkbox" data-progress="relational-model"> แยก key แต่ละชนิดได้แล้ว</label>
 
           <div class="schema">
-            <div class="schema__row"><strong>Relation schema</strong><span>Student(<span class="pk">student_id</span>, name, email, major)</span></div>
+            <div class="schema__row"><strong>Relation schema</strong><span>Student(<span class="pk">student_id</span>, national_id, email, full_name, major)</span></div>
             <div class="schema__row"><strong>Relation instance</strong><span>ชุด tuple ที่อยู่ใน Student ณ เวลาหนึ่ง</span></div>
-            <div class="schema__row"><strong>Tuple</strong><span>หนึ่งแถว เช่น (6600001, 'Somchai', 's@kku.ac.th', 'CoE')</span></div>
+            <div class="schema__row"><strong>Tuple</strong><span>หนึ่งแถว เช่น ('6600001', '1100100200015', 's@kku.ac.th', 'Somchai', 'CoE')</span></div>
             <div class="schema__row"><strong>Attribute</strong><span>หนึ่งคอลัมน์ เช่น major</span></div>
             <div class="schema__row"><strong>Domain</strong><span>เซตค่าที่ attribute อนุญาต เช่น GPA เป็น DECIMAL 0.00–4.00</span></div>
           </div>
@@ -625,41 +707,78 @@
           <div class="table-wrap"><table>
             <thead><tr><th>ชนิด</th><th>นิยาม</th><th>ตัวอย่างใน Student</th></tr></thead>
             <tbody>
-              <tr><td>Superkey</td><td>ชุด attribute ที่ระบุ tuple ได้ไม่ซ้ำ อาจมี attribute เกินจำเป็น</td><td>{student_id}, {email}, {student_id, name}</td></tr>
-              <tr><td>Candidate key</td><td><strong>Minimal superkey</strong>: เอา attribute ตัวใดออกแล้วไม่ unique</td><td>{student_id}, {email}</td></tr>
-              <tr><td>Primary key</td><td>candidate key ที่ผู้ออกแบบเลือกเป็นตัวระบุหลัก ควรคงที่</td><td>{student_id}</td></tr>
+              <tr><td>Superkey</td><td>ชุด attribute ที่ระบุ tuple ได้ไม่ซ้ำ อาจมี attribute เกินจำเป็น</td><td>{student_id}, {email}, {national_id}, {student_id, full_name}</td></tr>
+              <tr><td>Candidate key</td><td><strong>Minimal superkey</strong>: เอา attribute ตัวใดออกแล้วไม่ unique</td><td>{student_id}, {national_id}, {email}</td></tr>
+              <tr><td>Primary key</td><td>candidate key ที่ผู้ออกแบบเลือกเป็นตัวระบุหลัก ควรคงที่ ไม่เปลี่ยน</td><td>{student_id}</td></tr>
               <tr><td>Foreign key</td><td>attribute ใน referencing relation ที่อ้าง candidate/primary key ของ referenced relation</td><td>Enrollment.student_id → Student.student_id</td></tr>
             </tbody>
           </table></div>
-          <div class="warning"><strong>จุดหลอก:</strong> ถ้า {ID} เป็น candidate key แล้ว {ID, name} เป็น superkey แต่ <em>ไม่ใช่</em> candidate key เพราะมี <code>name</code> เกินมา ส่วน email อาจ unique แต่เปลี่ยนได้ จึงมักไม่เหมาะเป็น primary key เท่า ID ที่ระบบสร้าง</div>
+          <div class="warning"><strong>จุดหลอก:</strong> ถ้า {ID} เป็น candidate key แล้ว {ID, name} เป็น superkey แต่ <em>ไม่ใช่</em> candidate key เพราะมี <code>name</code> เกินมา (ถ้าตัด name ออก ID ยังคง unique อยู่)</div>
 
-          <h3>Referential Integrity</h3>
-          <p>ถ้า Enrollment มี <code>student_id = 999</code> ค่านั้นต้องปรากฏเป็น key ใน Student ก่อน มิฉะนั้น FK constraint จะปฏิเสธการ insert โดยทั่วไป FK อาจเป็น <code>NULL</code> ได้ถ้าไม่ได้กำหนด <code>NOT NULL</code></p>
-          <pre><code>Student(student_id PK, name)
+          <h3>ทำไมเลือก student_id เป็น Primary Key แทน email หรือ national_id?</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Candidate Key</th><th>ข้อดี</th><th>เหตุผลที่ไม่เลือกเป็น Primary Key</th></tr></thead>
+            <tbody>
+              <tr><td><strong>student_id</strong> (Surrogate Key)</td><td>สั้น คงที่ ระบบควบคุมเอง ขนาดสม่ำเสมอ</td><td><strong>เลือกเป็น PK:</strong> เหมาะทำ Index ค้นหาเร็ว และไม่ผูกกับข้อมูลภายนอก</td></tr>
+              <tr><td><strong>email</strong> (Natural Key)</td><td>จำง่าย ผู้ใช้พิมพ์เข้าระบบได้</td><td><strong>ไม่ควรเป็น PK:</strong> เปลี่ยนแปลงได้ (เช่น เปลี่ยนชื่อ-สกุล), ความยาวไม่แน่นอน</td></tr>
+              <tr><td><strong>national_id</strong> (Natural Key)</td><td>ไม่ซ้ำแน่นอนตลอดชีพ</td><td><strong>ไม่ควรเป็น PK:</strong> เป็นข้อมูลส่วนบุคคลที่มีความอ่อนไหว (PII/Security) และยาว 13 หลัก</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3>Referential Integrity และ Composite Primary Key</h3>
+          <p>ถ้า Enrollment มี <code>student_id = '99999'</code> ค่านั้นต้องปรากฏเป็น key ใน Student ก่อน มิฉะนั้น FK constraint จะปฏิเสธการ insert (Foreign Key Violation)</p>
+          <div class="callout">
+            <strong>Composite Primary Key ในตาราง Enrollment:</strong><br>
+            <code>student_id</code> เดี่ยวๆ เป็น PK ของ Enrollment ไม่ได้ เพราะนักศึกษาคนเดิมสามารถลงทะเบียนได้หลายวิชาในหลายเทอม จึงต้องใช้ <code>PRIMARY KEY (student_id, course_id, semester, year)</code> ร่วมกัน
+          </div>
+          <pre><code>Student(student_id PK, national_id UNIQUE, email UNIQUE, full_name)
+Course(course_id PK, course_name, credits)
 Enrollment(student_id FK → Student.student_id,
            course_id FK → Course.course_id,
-           semester,
-           PK(student_id, course_id, semester))</code></pre>
+           semester, year, grade,
+           PRIMARY KEY (student_id, course_id, semester, year))</code></pre>
         </section>
 
         <section class="chapter search-unit" id="relational-algebra" data-tab="RELATIONAL ALGEBRA">
           <h2>Relational Algebra</h2>
-          <p class="chapter-intro">เป็นภาษาทางคณิตศาสตร์ที่รับ relation เข้าและคืน relation ออก จึงประกอบ operators ต่อกันได้ SQL บอกว่า “ต้องการอะไร” ส่วน algebra แสดงโครงดำเนินการที่ DBMS ใช้คิด</p>
+          <p class="chapter-intro">เป็นภาษาทางคณิตศาสตร์แบบ Formal ที่รับ relation เข้าและคืน relation ออก (Closure property) SQL บอกว่า “ต้องการอะไร” ส่วน algebra แสดงลำดับโครงดำเนินการที่ DBMS ใช้ในการคิดและ optimize query</p>
           <label class="section-check"><input type="checkbox" data-progress="relational-algebra"> อ่านและเขียนนิพจน์พื้นฐานได้แล้ว</label>
 
           <div class="table-wrap"><table>
             <thead><tr><th>Operator</th><th>หน้าที่</th><th>ตัวอย่าง</th></tr></thead>
             <tbody>
-              <tr><td>σ Selection</td><td>เลือกแถวตาม predicate</td><td><code>σ major='CoE' (Student)</code></td></tr>
-              <tr><td>π Projection</td><td>เลือกคอลัมน์ และตัด tuple ซ้ำเพราะ relation เป็น set</td><td><code>π name,gpa (Student)</code></td></tr>
-              <tr><td>× Cartesian product</td><td>จับคู่ทุก tuple ของสอง relation</td><td><code>Student × Enrollment</code></td></tr>
-              <tr><td>⋈ Join</td><td>product แล้วคัดคู่ที่สัมพันธ์กัน</td><td><code>Student ⋈ Student.id=Enrollment.id Enrollment</code></td></tr>
-              <tr><td>∪ Union</td><td>อยู่ใน r หรือ s หรือทั้งคู่</td><td><code>FallCourses ∪ SpringCourses</code></td></tr>
-              <tr><td>∩ Intersection</td><td>อยู่ในทั้ง r และ s</td><td><code>FallCourses ∩ SpringCourses</code></td></tr>
-              <tr><td>− Difference</td><td>อยู่ใน r แต่ไม่อยู่ s</td><td><code>FallCourses − SpringCourses</code></td></tr>
-              <tr><td>ρ Rename</td><td>ตั้งชื่อ relation/attributes ชั่วคราว</td><td><code>ρ S(Student)</code></td></tr>
+              <tr><td>σ Selection</td><td>เลือกแถว (tuples) ตามเงื่อนไข predicate</td><td><code>σ major='CoE' (Student)</code></td></tr>
+              <tr><td>π Projection</td><td>เลือกคอลัมน์ (attributes) และ<strong>ตัดแถวซ้ำออกอัตโนมัติ</strong></td><td><code>π name,gpa (Student)</code></td></tr>
+              <tr><td>× Cartesian product</td><td>จับคู่ทุก tuple ของสอง relation ($n \times m$ แถว)</td><td><code>Student × Enrollment</code></td></tr>
+              <tr><td>⋈ Join</td><td>Cartesian product แล้วคัดเฉพาะคู่ที่เงื่อนไขตรงกัน</td><td><code>Student ⋈ Student.student_id=Enrollment.student_id Enrollment</code></td></tr>
+              <tr><td>∪ Union</td><td>อยู่ใน r หรือ s หรือทั้งสองตาราง (ตัดแถวซ้ำ)</td><td><code>FallCourses ∪ SpringCourses</code></td></tr>
+              <tr><td>∩ Intersection</td><td>ต้องอยู่ในทั้ง r และ s (ตัดแถวซ้ำ)</td><td><code>FallCourses ∩ SpringCourses</code></td></tr>
+              <tr><td>− Difference / Except</td><td>อยู่ใน r แต่ต้องไม่อยู่ใน s</td><td><code>FallCourses − SpringCourses</code></td></tr>
+              <tr><td>ρ Rename</td><td>ตั้งชื่อ relation หรือ attributes ใหม่ชั่วคราว</td><td><code>ρ S(Student)</code> หรือ <code>ρ (1→id, 2→name) (Student)</code></td></tr>
             </tbody>
           </table></div>
+
+          <div class="callout">
+            <strong>Pure Set Semantics:</strong> ใน Relational Algebra ผลลัพธ์จากการ $\pi$ (Projection) จะ<strong>ไม่มีแถวซ้ำเด็ดขาด</strong> เช่น <code>π major (Student)</code> จะคืนรายชื่อสาขาเพียงแถวละ 1 ครั้ง ต่างจากคำสั่ง <code>SELECT major FROM Student</code> ใน SQL ซึ่งเป็น Multiset (Bag) ที่จะมีแถวซ้ำตามจริง เว้นแต่จะระบุ <code>SELECT DISTINCT</code>
+          </div>
+
+          <h3>กฎการสมมูล (Equivalence Rules) &amp; ลำดับการประมวลผลที่ชอบออกสอบ</h3>
+          <div class="manual-grid">
+            <div class="span-6 success">
+              <strong>1. กฎการกระจาย Selection (Cascade σ):</strong>
+              <p>สามารถแยกเงื่อนไข <code>AND (∧)</code> ทำทีละชั้น หรือสลับลำดับกันได้:</p>
+              <pre><code>σ c1 ∧ c2 (R) ≡ σ c1 ( σ c2 (R) ) ≡ σ c2 ( σ c1 (R) )</code></pre>
+              <p class="small">เช่น กรอง <code>major='CoE' ∧ gpa>3.0</code> ทำเงื่อนไขไหนก่อนก็ได้ผลลัพธ์เท่ากันเสมอ</p>
+            </div>
+            <div class="span-6 danger">
+              <strong>2. กฎลำดับ σ และ π (ต้องระวังมาก!):</strong>
+              <p>การสลับ Projection กับ Selection อาจ<strong>ไม่สมมูลกัน</strong>:</p>
+              <pre><code>π name ( σ gpa>3.0 (Student) )  ✓ ถูกต้อง
+-- ไม่เท่ากับ --
+σ gpa>3.0 ( π name (Student) )  ✗ ผิดพลาด!</code></pre>
+              <p class="small"><strong>เหตุผล:</strong> เพราะถ้าทำ <code>π name</code> ก่อน ตารางชั่วคราวจะเหลือเพียงคอลัมน์ <code>name</code> ไม่มีคอลัมน์ <code>gpa</code> ให้ <code>σ</code> ตรวจสอบเงื่อนไขได้อีกต่อไป</p>
+            </div>
+          </div>
 
           <h3>แปลโจทย์ทีละชั้น</h3>
           <div class="manual-grid">
@@ -675,16 +794,14 @@ Enrollment(student_id FK → Student.student_id,
 )</code></pre>
             </div>
             <div class="span-6 panel panel--flat">
-              <strong>หา “ชื่อวิชา” ที่นักศึกษา 6601 ลงทะเบียน</strong>
-              <pre><code>π title (
-  σ student_id=6601 (
-    Enrollment ⋈ Enrollment.course_id=Course.course_id Course
-  )
-)</code></pre>
-              <p class="memory-rule">อ่านจากข้างในออกข้างนอก: รวมตาราง → กรองแถว → เลือกคอลัมน์</p>
+              <strong>หา “รหัสวิชา” ที่เปิดสอนปี 2026 แต่ไม่เปิดในปี 2025</strong>
+              <pre><code>π course_id (σ year=2026 (Enrollment))
+  −
+π course_id (σ year=2025 (Enrollment))</code></pre>
+              <p class="memory-rule">ใช้ Difference (−) ระหว่างเซตของปี 2026 กับเซตของปี 2025</p>
             </div>
           </div>
-          <div class="warning"><strong>Union compatibility:</strong> ∪, ∩ และ − ใช้ได้เมื่อจำนวน attribute เท่ากันและ domain ในตำแหน่งเดียวกันเข้ากันได้ ส่วน optimization มัก “กรองก่อน join” เพื่อลดขนาด intermediate result</div>
+          <div class="warning"><strong>Union compatibility:</strong> ∪, ∩ และ − ใช้ได้เมื่อจำนวน attribute เท่ากันและ domain ในตำแหน่งเดียวกันเข้ากันได้ ส่วน optimization มัก “กรองแถว (σ) ก่อน join (⋈)” เพื่อลดขนาด intermediate result</div>
         </section>
 
         <section class="chapter search-unit" id="sql-foundation" data-tab="SQL 60% / CORE">
@@ -734,6 +851,31 @@ SELECT employee_id,
 FROM employees
 ORDER BY monthly_salary DESC;</code></pre>
           <p><code>SELECT</code> คืน duplicate ได้ตามปกติ เพราะ SQL ใช้แนวคิด bag/multiset ใช้ <code>DISTINCT</code> เมื่อโจทย์ขอ “ไม่ซ้ำ” เท่านั้น ไม่ควรใส่เพื่อซ่อน join ที่ผิด</p>
+
+          <h3>CASE Expression และ ฟังก์ชัน COALESCE</h3>
+          <div class="manual-grid">
+            <div class="span-6 panel panel--flat">
+              <strong>CASE ใน SELECT (สร้างคอลัมน์จำแนกกลุ่ม)</strong>
+              <pre><code>SELECT first_name, salary,
+  CASE
+    WHEN salary &gt;= 80000 THEN 'High'
+    WHEN salary &gt;= 60000 THEN 'Medium'
+    ELSE 'Entry'
+  END AS salary_tier
+FROM employees;</code></pre>
+            </div>
+            <div class="span-6 panel panel--flat">
+              <strong>COALESCE (คืนค่าแรกที่ไม่เป็น NULL)</strong>
+              <pre><code>-- ถ้า commission เป็น NULL ให้ใช้ 0
+SELECT first_name,
+       salary + COALESCE(commission, 0) AS total_pay
+FROM employees;
+
+-- แสดง 'No Manager' แทนค่า NULL
+SELECT name, COALESCE(manager_name, 'None')
+FROM staff;</code></pre>
+            </div>
+          </div>
         </section>
 
         <section class="chapter search-unit" id="sql-joins" data-tab="SQL / JOINS">
@@ -957,7 +1099,38 @@ FROM departments d;</code></pre>
           </div>
           <div class="danger"><strong>กับดัก NOT IN + NULL:</strong> ถ้า subquery คืน NULL การเปรียบเทียบอาจกลายเป็น UNKNOWN และไม่คืนแถวตามคาด สำหรับ “ไม่มีความสัมพันธ์” มักใช้ <code>NOT EXISTS</code> ปลอดภัยกว่า</div>
 
-          <h3>WITH / CTE</h3>
+          <h3>Database Modification ด้วย Subquery</h3>
+          <div class="manual-grid">
+            <div class="span-4 panel panel--flat">
+              <strong>INSERT ... SELECT</strong>
+              <pre><code>-- คัดลอกข้อมูลข้ามตาราง
+INSERT INTO high_earners
+SELECT employee_id, first_name, salary
+FROM employees
+WHERE salary &gt; 80000;</code></pre>
+            </div>
+            <div class="span-4 panel panel--flat">
+              <strong>DELETE ด้วย Subquery</strong>
+              <pre><code>-- ลบโครงการในแผนก Boston
+DELETE FROM projects
+WHERE department_id IN (
+  SELECT department_id
+  FROM departments
+  WHERE location = 'Boston'
+);</code></pre>
+            </div>
+            <div class="span-4 panel panel--flat">
+              <strong>UPDATE แบบมีเงื่อนไข</strong>
+              <pre><code>-- ปรับเงินเดือนตามเงื่อนไข
+UPDATE employees
+SET salary = CASE
+  WHEN salary &gt; 100000 THEN salary * 1.03
+  ELSE salary * 1.05
+END;</code></pre>
+            </div>
+          </div>
+
+          <h3>WITH / CTE (Common Table Expression)</h3>
           <pre><code>WITH above_average AS (
   SELECT *
   FROM employees
@@ -967,6 +1140,86 @@ SELECT a.first_name, d.department_name
 FROM above_average a
 JOIN departments d ON d.department_id = a.department_id;</code></pre>
           <p class="muted">CTE เป็นผลลัพธ์ตั้งชื่อชั่วคราวที่ใช้ได้ภายใน query เดียว ช่วยแบ่ง query ยาวให้คิดทีละส่วน</p>
+        </section>
+
+        <section class="chapter search-unit" id="sql-advanced" data-tab="SQL / VIEWS &amp; INDEX">
+          <h2>Views, Indexes และ Authorization</h2>
+          <p class="chapter-intro">สรุป 3 หัวข้อสำคัญจาก Intermediate SQL &amp; Database Administration ที่ใช้ควบคุมความปลอดภัย ซ่อนความซับซ้อน และเพิ่มประสิทธิภาพการค้นหา</p>
+          <label class="section-check"><input type="checkbox" data-progress="sql-advanced"> เข้าใจ Views, Index และสิทธิ์ผู้ใช้แล้ว</label>
+
+          <h3>1. Views (ตารางเสมือน) และ Materialized Views</h3>
+          <div class="manual-grid">
+            <div class="span-6 panel panel--flat">
+              <strong>ประโยชน์ของ Views:</strong>
+              <ul>
+                <li><strong>Security:</strong> ซ่อนคอลัมน์สำคัญ (เช่น ซ่อนเงินเดือน/รหัสผ่าน) จากผู้ใช้บางกลุ่ม</li>
+                <li><strong>Query Simplicity:</strong> รวม JOIN ซับซ้อนไว้ในชื่อเดียว ทำให้เรียกใช้ง่าย</li>
+              </ul>
+              <pre><code>CREATE VIEW faculty AS
+SELECT ID, name, dept_name
+FROM instructor;
+
+-- ลบ View (ไม่ลบข้อมูลในตารางจริง)
+DROP VIEW IF EXISTS faculty;</code></pre>
+            </div>
+            <div class="span-6 panel panel--flat">
+              <strong>กฎของ Updatable Views (ปรับปรุงข้อมูลผ่าน View ได้):</strong>
+              <ol>
+                <li><code>FROM</code> อ้างอิงเพียง<strong>ตารางเดียว</strong></li>
+                <li><code>SELECT</code> มีเฉพาะชื่อ attribute ตรงๆ (ห้ามมี expression, aggregate, DISTINCT)</li>
+                <li>ไม่มี <code>GROUP BY</code> หรือ <code>HAVING</code></li>
+                <li>คอลัมน์ในตารางหลักที่ไม่ได้เลือก ต้องยอมรับค่า NULL หรือมี DEFAULT</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="table-wrap"><table>
+            <thead><tr><th>ประเภท View</th><th>การจัดเก็บข้อมูล</th><th>ความเร็วในการค้นหา</th><th>การอัปเดตข้อมูล</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Virtual View</strong> (ปกติ)</td><td>เก็บเฉพาะนิยาม SQL (ไม่มีสำเนาจริง)</td><td>ประเมิน Query ใหม่ทุกครั้งที่เรียก</td><td>ข้อมูลสดใหม่เสมอตามตารางจริง</td></tr>
+              <tr><td><strong>Materialized View</strong></td><td>สร้างตารางทางกายภาพ (Physical Table) เก็บผลลัพธ์จริง</td><td>เร็วมาก เพราะอ่านจาก Disk ตรงๆ</td><td>ต้องมีกลไก Refresh เมื่อตารางจริงเปลี่ยน</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3>2. Indexes และ B-Tree (การเพิ่มความเร็ว Query)</h3>
+          <div class="manual-grid">
+            <div class="span-6 success">
+              <strong>Full Table Scan vs Index Lookup</strong>
+              <ul>
+                <li><strong>Full Table Scan ($O(N)$):</strong> DBMS ต้องกวาดอ่านทุกบล็อกบนดิสก์ทีละแถว ช้ามากเมื่อตารางมีหลายแสนหรือล้านแถว</li>
+                <li><strong>Index Lookup ($O(\log N)$):</strong> ใช้โครงสร้าง <strong>B-Tree</strong> นำทางด้วย binary search ค้นหาเจอใน 3–4 I/O เท่านั้น</li>
+              </ul>
+              <pre><code>-- สร้าง Index เดี่ยวและคู่
+CREATE INDEX idx_author ON books(author);
+CREATE INDEX idx_title_year ON books(title, pub_year);
+
+-- ตรวจสอบและลบ Index
+SHOW INDEX FROM books;
+DROP INDEX idx_author ON books;</code></pre>
+            </div>
+            <div class="span-6 danger">
+              <strong>เมื่อไหร่ควรสร้าง vs ไม่ควรสร้าง Index?</strong>
+              <ul>
+                <li><strong>ควรสร้าง:</strong> คอลัมน์ที่อยู่ใน <code>WHERE</code>, <code>JOIN ... ON</code>, <code>ORDER BY</code> บ่อยๆ หรือมีค่าไม่ซ้ำกันสูง (High Cardinality)</li>
+                <li><strong>ไม่ควรสร้าง:</strong> ตารางขนาดเล็กมาก, คอลัมน์ที่มีการ <code>INSERT / UPDATE</code> ตลอดเวลา (เพราะต้องเสียเวลาอัปเดตต้นไม้ B-Tree), คอลัมน์ที่มีค่าน้อยมาก เช่น boolean flag</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>3. Authorization: สิทธิ์และการควบคุมการเข้าถึง (DCL)</h3>
+          <p>ใช้คำสั่ง <code>GRANT</code> เพื่อให้สิทธิ์ และ <code>REVOKE</code> เพื่อยกเลิกสิทธิ์ในการกระทำกับตารางหรือคอลัมน์</p>
+          <pre><code>-- ให้สิทธิ์เต็มแก่ Librarian
+GRANT SELECT, INSERT, UPDATE, DELETE ON books TO librarian;
+
+-- ให้สิทธิ์เฉพาะบางคอลัมน์แก่ Assistant
+GRANT SELECT ON books TO assistant;
+GRANT UPDATE (available_copies, last_borrowed) ON books TO assistant;
+
+-- ให้สิทธิ์ส่งต่อสิทธิ์ได้ (WITH GRANT OPTION)
+GRANT SELECT ON books TO manager WITH GRANT OPTION;
+
+-- ถอนสิทธิ์
+REVOKE UPDATE ON books FROM assistant;</code></pre>
         </section>
 
         <section class="chapter search-unit" id="integrity" data-tab="SQL / INTEGRITY">
@@ -1033,10 +1286,10 @@ REFERENCES students(student_id);</code></pre>
           <div class="manual-grid">
             <div class="span-6 panel panel--flat">
               <dl class="term-list">
-                <div><dt>Entity</dt><dd>วัตถุโลกจริงที่แยกจากสิ่งอื่นได้ เช่น Student, Course</dd></div>
+                <div><dt>Entity</dt><dd>วัตถุโลกจริงที่แยกจากสิ่งอื่นได้ เช่น Student, Course (สัญลักษณ์: สี่เหลี่ยมผืนผ้า)</dd></div>
                 <div><dt>Entity set</dt><dd>กลุ่ม entities ชนิดเดียวกัน มี attributes เหมือนกัน</dd></div>
-                <div><dt>Attribute</dt><dd>คุณสมบัติที่อธิบาย entity/relationship เช่น name, since</dd></div>
-                <div><dt>Relationship</dt><dd>ความสัมพันธ์ระหว่าง entities ตั้งแต่สองชุดขึ้นไป เช่น Student enrolls Course</dd></div>
+                <div><dt>Attribute</dt><dd>คุณสมบัติที่อธิบาย entity/relationship เช่น name, since (สัญลักษณ์: วงรี)</dd></div>
+                <div><dt>Relationship</dt><dd>ความสัมพันธ์ระหว่าง entities ตั้งแต่สองชุดขึ้นไป เช่น Student enrolls Course (สัญลักษณ์: สี่เหลี่ยมข้าวหลามตัด / Diamond)</dd></div>
               </dl>
             </div>
             <div class="span-6 callout">
@@ -1048,6 +1301,17 @@ REFERENCES students(student_id);</code></pre>
               <p><strong>“each / at most one”</strong> ชี้ไปฝั่ง 1<br><strong>“many / several / multiple”</strong> ชี้ไปฝั่ง N</p>
             </div>
           </div>
+
+          <h3>การจำแนกชนิดของ Attributes ใน ER Diagram</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ประเภท Attribute</th><th>ความหมาย</th><th>สัญลักษณ์ใน ER</th><th>ตัวอย่าง</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Simple vs Composite</strong></td><td>ค่าเดี่ยวแบ่งไม่ได้ vs ประกอบจากส่วนย่อย</td><td>วงรีเดี่ยว vs วงรีแตกกิ่ง</td><td><code>salary</code> (Simple) vs <code>Address</code> (street, city, zip)</td></tr>
+              <tr><td><strong>Single vs Multi-valued</strong></td><td>มีได้ค่าเดียว vs มีได้หลายค่าต่อ 1 entity</td><td>วงรีเดี่ยว vs <strong>วงรีซ้อนสองชั้น</strong></td><td><code>gpa</code> (Single) vs <code>phone_numbers</code> (Multi-valued)</td></tr>
+              <tr><td><strong>Stored vs Derived</strong></td><td>บันทึกจริง vs คำนวณได้จากข้อมูลอื่น</td><td>วงรีทึบ vs <strong>วงรีเส้นประ</strong></td><td><code>date_of_birth</code> (Stored) vs <code>age</code> (Derived)</td></tr>
+              <tr><td><strong>Key vs Partial Key</strong></td><td>ระบุ entity ได้ไม่ซ้ำ vs ระบุได้เฉพาะในกลุ่ม owner</td><td><strong>ขีดเส้นใต้ทึบ</strong> vs <strong>ขีดเส้นใต้ประ</strong></td><td><code>student_id</code> (Key) vs <code>dep_name</code> ใน Weak entity</td></tr>
+            </tbody>
+          </table></div>
 
           <h3>ตัวอย่างแปลข้อความ</h3>
           <div class="table-wrap"><table>
@@ -1061,61 +1325,111 @@ REFERENCES students(student_id);</code></pre>
 
           <h3>Participation Constraints</h3>
           <div class="manual-grid">
-            <div class="span-6 success"><strong>Total participation</strong><p>entity ทุกตัวต้องเข้าร่วม relationship อย่างน้อยหนึ่งครั้ง คำใบ้: every, must, required เช่น “พนักงานทุกคนต้องอยู่แผนก”</p></div>
-            <div class="span-6 panel panel--flat"><strong>Partial participation</strong><p>บาง entity อาจไม่เข้าร่วม คำใบ้: may, optional, not every เช่น “พนักงานอาจยังไม่ได้รับมอบหมายโครงการ”</p></div>
+            <div class="span-6 success"><strong>Total participation (เส้นคู่)</strong><p>entity ทุกตัวต้องเข้าร่วม relationship อย่างน้อยหนึ่งครั้ง คำใบ้: every, must, required เช่น “พนักงานทุกคนต้องสังกัดแผนก”</p></div>
+            <div class="span-6 panel panel--flat"><strong>Partial participation (เส้นเดี่ยว)</strong><p>บาง entity อาจไม่เข้าร่วม คำใบ้: may, optional, not every เช่น “พนักงานอาจยังไม่ได้รับมอบหมายโครงการ”</p></div>
           </div>
 
-          <h3>Weak Entity</h3>
-          <p>weak entity ไม่มี key ที่ระบุได้โดยลำพัง ต้องใช้ <strong>partial key + primary key ของ owner</strong> โดย owner กับ weak entity เป็น 1:N และ weak entity มี total participation ใน identifying relationship</p>
+          <h3>Weak Entity (สี่เหลี่ยมคู่ และ ข้าวหลามตัดคู่)</h3>
+          <p>weak entity ไม่มี key ที่ระบุได้โดยลำพัง ต้องใช้ <strong>partial key (ขีดเส้นใต้ประ) + primary key ของ owner</strong> โดย owner กับ weak entity เป็น 1:N เสมอ และ weak entity มี total participation ใน identifying relationship</p>
           <pre><code>Employee(emp_id PK, name)
 Dependent(emp_id FK, dependent_name, relationship,
-          PK(emp_id, dependent_name))</code></pre>
-
-          <h3>Entity หรือ Attribute?</h3>
-          <ul>
-            <li>ถ้ามีหลายค่าต่อ entity เช่น พนักงานมีหลาย address → มักแยก Address เป็น entity</li>
-            <li>ถ้าต้อง query โครงสร้างภายใน เช่น city/street → แยก composite attribute หรือ entity ให้ค้นได้</li>
-            <li>ถ้าข้อมูลขึ้นกับคู่ของ entities เช่น enrollment grade → เป็น relationship attribute</li>
-          </ul>
+          PRIMARY KEY (emp_id, dependent_name))</code></pre>
         </section>
 
         <section class="chapter search-unit" id="er-conversion" data-tab="DESIGN / CONVERSION">
           <h2>แปลง ER Diagram เป็น Relational Schema</h2>
-          <p class="chapter-intro">ทำตามกฎคงที่: สร้างตาราง entity ก่อน จากนั้นวาง FK ตาม cardinality แล้วค่อยย้าย attributes ของ relationship และบังคับ participation</p>
-          <label class="section-check"><input type="checkbox" data-progress="er-conversion"> แปลง 1:N, M:N, weak และ ternary ได้แล้ว</label>
+          <p class="chapter-intro">ทำตามกฎมาตรฐาน: สร้างตาราง entity ก่อน จากนั้นกระจาย composite attribute, แตก multi-valued attribute, วาง FK ตาม cardinality และบังคับ constraints</p>
+          <label class="section-check"><input type="checkbox" data-progress="er-conversion"> แปลง 1:N, M:N, weak, multi-valued และ recursive ได้แล้ว</label>
 
           <ol class="decision-tree">
-            <li><strong>Entity → Table:</strong> simple attribute เป็น column; composite attribute แตกเป็นส่วนย่อย; key เดิมเป็น PK</li>
-            <li><strong>หา cardinality:</strong> อ่านสองทิศและหา total/partial participation</li>
-            <li><strong>วาง FK:</strong> 1:N วาง key ฝั่ง 1 ในตารางฝั่ง N; M:N/ternary สร้างตารางใหม่</li>
-            <li><strong>ย้าย relationship attributes:</strong> ใส่ในตารางที่เป็นตัวแทน relationship</li>
-            <li><strong>ตรวจ constraints:</strong> PK, FK, UNIQUE สำหรับ 1:1 และ NOT NULL สำหรับ total participation</li>
+            <li><strong>Entity ปกติ → Table:</strong> simple attribute เป็น column; <strong>composite attribute แตกเป็นคอลัมน์ย่อย</strong> ในตารางเดิม</li>
+            <li><strong>Multi-valued Attribute → ตารางใหม่:</strong> สร้างตารางเก็บ <code>(owner_pk FK, attribute_value)</code> เป็น Composite PK</li>
+            <li><strong>1:N / N:1 Relationship:</strong> นำ PK ฝั่ง 1 ไปวางเป็น FK ในตารางฝั่ง N พร้อมย้าย relationship attributes ไปไว้ฝั่ง N</li>
+            <li><strong>M:N Relationship:</strong> สร้าง <strong>Junction Table</strong> ใหม่ โดยมี FK จากทั้งสองตารางรวมกันเป็น Composite PK</li>
+            <li><strong>1:1 Relationship:</strong> วาง FK ฝั่งใดฝั่งหนึ่ง (เลือกฝั่ง Total Participation) และต้องใส่ <code>UNIQUE</code> บน FK เสมอ</li>
+            <li><strong>Recursive (Self-referencing):</strong> วาง FK อ้างกลับมาที่ PK ของตารางตัวเอง เช่น <code>manager_id FK REFERENCES Employee(emp_id)</code></li>
+            <li><strong>Weak Entity:</strong> ตารางลูกมี <code>(owner_pk FK, partial_key)</code> เป็น Composite PK</li>
           </ol>
 
           <div class="table-wrap"><table>
             <thead><tr><th>ER Pattern</th><th>กฎแปลง</th><th>Schema ย่อ</th></tr></thead>
             <tbody>
-              <tr><td>1:N</td><td>นำ PK ฝั่ง 1 ไปเป็น FK ฝั่ง N</td><td>Department(dept_id PK)<br>Employee(emp_id PK, dept_id FK)</td></tr>
-              <tr><td>N:1</td><td>เหมือน 1:N: FK อยู่ฝั่ง N</td><td>Employee(..., dept_id FK)</td></tr>
-              <tr><td>M:N</td><td>สร้าง junction relation มี FK ทั้งสองฝั่ง และ relationship attributes</td><td>Enrollment(student_id FK, course_id FK, grade, PK(student_id,course_id))</td></tr>
-              <tr><td>1:1</td><td>วาง FK ฝั่งใดฝั่งหนึ่ง; มักเลือกฝั่ง total participation และใส่ UNIQUE</td><td>Person(person_id PK, passport_id FK UNIQUE)</td></tr>
-              <tr><td>Ternary</td><td>สร้าง relation ใหม่มี FK ของ entity ทั้งสามและ attributes ของ relationship</td><td>Supplies(supplier_id, part_id, project_id, quantity)</td></tr>
-              <tr><td>Weak entity</td><td>ตาราง weak มี owner PK เป็น FK + partial key; composite PK</td><td>Dependent(emp_id FK, name, PK(emp_id,name))</td></tr>
+              <tr><td><strong>Composite Attribute</strong></td><td>แตกเป็นคอลัมน์ย่อยในตารางเดิม</td><td>Customer(cust_id PK, name, <u>street, city, zipcode</u>)</td></tr>
+              <tr><td><strong>Multi-valued Attribute</strong></td><td>สร้างตารางใหม่ มี owner PK + ค่านั้นเป็น Composite PK</td><td>Customer_Phones(<u>cust_id FK, phone_no</u>, phone_type, PK(cust_id, phone_no))</td></tr>
+              <tr><td><strong>1:N Relationship</strong></td><td>นำ PK ฝั่ง 1 ไปเป็น FK ฝั่ง N</td><td>Department(dept_id PK)<br>Employee(emp_id PK, name, dept_id FK)</td></tr>
+              <tr><td><strong>M:N Relationship</strong></td><td>สร้าง Junction Table มี FK ทั้งสองฝั่ง + Relationship Attributes</td><td>Enrollment(<u>student_id FK, course_id FK</u>, grade, PK(student_id, course_id))</td></tr>
+              <tr><td><strong>1:1 Relationship</strong></td><td>วาง FK ฝั่งใดฝั่งหนึ่ง (มักเลือกฝั่ง total) + ใส่ <code>UNIQUE</code></td><td>Person(person_id PK, name)<br>Passport(pass_no PK, person_id FK UNIQUE NOT NULL)</td></tr>
+              <tr><td><strong>Recursive (Unary)</strong></td><td>เพิ่ม FK ชี้กลับมาที่ PK เดิม</td><td>Employee(emp_id PK, name, manager_id FK REFERENCES Employee(emp_id))</td></tr>
+              <tr><td><strong>Weak Entity</strong></td><td>ตาราง weak มี owner PK เป็น FK + partial key เป็น Composite PK</td><td>Dependent(<u>emp_id FK, dep_name</u>, birth_date, PK(emp_id, dep_name))</td></tr>
             </tbody>
           </table></div>
 
-          <h3>Relationship Attributes และ Participation</h3>
+          <h3>ตัวอย่างการแปลงความสัมพันธ์ที่มี Attributes</h3>
           <div class="manual-grid">
             <div class="span-6 panel panel--flat"><strong>1:N พร้อม JoinDate</strong><p>JoinDate อธิบายความสัมพันธ์ Employee–Department จึงเก็บพร้อม dept_id ใน Employee ฝั่ง N</p><pre><code>Employee(emp_id PK, name,
          dept_id FK NOT NULL,
          join_date)</code></pre></div>
-            <div class="span-6 panel panel--flat"><strong>M:N พร้อม grade</strong><p>grade ไม่ใช่ของ Student หรือ Course อย่างเดียว แต่ขึ้นกับการลงทะเบียนแต่ละครั้ง จึงอยู่ใน Enrollment</p><pre><code>Enrollment(student_id FK,
+            <div class="span-6 panel panel--flat"><strong>M:N พร้อม semester และ grade</strong><p>grade และ semester ขึ้นกับการลงทะเบียนแต่ละครั้ง จึงอยู่ในตาราง Junction</p><pre><code>Enrollment(student_id FK,
            course_id FK,
-           semester,
-           grade,
-           PK(student_id,course_id,semester))</code></pre></div>
+           semester, year, grade,
+           PRIMARY KEY (student_id, course_id, semester, year))</code></pre></div>
           </div>
-          <div class="callout"><strong>Participation → SQL:</strong> total participation ที่แทนด้วย FK มักบังคับด้วย <code>NOT NULL</code>; partial participation อนุญาต FK เป็น NULL ส่วน 1:1 ต้องเพิ่ม <code>UNIQUE</code> บน FK เพื่อไม่ให้หลายแถวอ้าง counterpart เดียวกัน</div>
+          <div class="callout"><strong>Participation → SQL:</strong> Total participation ที่แทนด้วย FK ในฝั่ง N มักบังคับด้วย <code>NOT NULL</code>; ส่วน 1:1 ต้องเพิ่ม <code>UNIQUE</code> บน FK เพื่อป้องกันไม่ให้หลายแถวชี้ไปยัง counterpart เดียวกัน</div>
+        </section>
+
+        <section class="chapter search-unit" id="bad-design" data-tab="DESIGN / ANTI-PATTERNS">
+          <h2>Case Study: Bad vs Good Schema Design</h2>
+          <p class="chapter-intro">สรุปกรณีศึกษา 4 ข้อผิดพลาดในการออกแบบที่พบบ่อยในแบบฝึกหัดและการทำงานจริง พร้อมวิธีแก้ไขให้ถูกต้องตามหลัก Relational Model</p>
+          <label class="section-check"><input type="checkbox" data-progress="bad-design"> แยกแยะและแก้ไข Bad Design ได้แล้ว</label>
+
+          <div class="manual-grid">
+            <div class="span-6 danger">
+              <h3>1. Repeating Groups (คอลัมน์ซ้ำซ้อน)</h3>
+              <p><strong>Bad Design:</strong> <code>Orders(order_id, cust_name, prod1_name, prod1_price, prod2_name, prod2_price, ...)</code></p>
+              <ul>
+                <li><strong>ปัญหา:</strong> ถ้าลูกค้าซื้อชิ้นที่ 4 เก็บไม่ได้, ค้นหาสินค้ายากมาก (ต้อง <code>WHERE prod1 = 'X' OR prod2 = 'X'</code>), เปลืองเนื้อที่เมื่อซื้อชิ้นเดียว (NULL บาน)</li>
+                <li><strong>Good Design:</strong> แยกเป็น 2 ตาราง:<br>
+                  - <code>Orders(order_id PK, customer_id FK, order_date)</code><br>
+                  - <code>Order_Items(order_id FK, product_id FK, quantity, unit_price, PK(order_id, product_id))</code>
+                </li>
+              </ul>
+            </div>
+
+            <div class="span-6 danger">
+              <h3>2. Text Blob / Unstructured Data</h3>
+              <p><strong>Bad Design:</strong> <code>Patients(patient_id, name, medical_history_text)</code> เก็บประวัติการรักษา ยาที่แพ้ เป็นข้อความยาวๆ</p>
+              <ul>
+                <li><strong>ปัญหา:</strong> ไม่สามารถเขียน SQL ตรวจสอบการแพ้ยาอัตโนมัติได้อย่างปลอดภัย, แก้ไขพร้อมกันแล้วข้อมูลทับกันสูญหาย, ทำรายงานสถิติไม่ได้</li>
+                <li><strong>Good Design:</strong> แยกตารางเฉพาะ เช่น <code>Allergies(patient_id FK, drug_name)</code> และ <code>Prescriptions(rx_id PK, patient_id FK, drug_id, dosage, date)</code></li>
+              </ul>
+            </div>
+
+            <div class="span-6 danger">
+              <h3>3. Missing Index บนตารางขนาดใหญ่</h3>
+              <p><strong>Bad Design:</strong> ตาราง <code>Posts</code> มี 500,000,000 แถว แต่ไม่มี Index บน <code>user_id</code> หรือ <code>created_at</code></p>
+              <ul>
+                <li><strong>ปัญหา:</strong> รัน <code>SELECT * FROM posts WHERE user_id = 123 ORDER BY created_at DESC;</code> จะเกิด <strong>Full Table Scan</strong> สแกน 500M แถวทุกครั้ง เซิร์ฟเวอร์ล่มเมื่อมีผู้ใช้พร้อมกัน</li>
+                <li><strong>Good Design:</strong> สร้าง Composite Index:<br>
+                  <code>CREATE INDEX idx_user_created ON posts(user_id, created_at DESC);</code>
+                </li>
+              </ul>
+            </div>
+
+            <div class="span-6 danger">
+              <h3>4. ละเลย Transaction / ACID Violation</h3>
+              <p><strong>Bad Design:</strong> โอนเงิน 3,000 บาทโดยใช้คำสั่ง UPDATE แยกเดี่ยวๆ โดยไม่มี Transaction Wrapping</p>
+              <ul>
+                <li><strong>ปัญหา:</strong> หักเงินนาย A สำเร็จ แต่เซิร์ฟเวอร์ดับก่อนบวกเงินให้นาย B $\rightarrow$ เงินหายไป 3,000 บาท ข้อมูลไม่สอดคล้อง</li>
+                <li><strong>Good Design:</strong> ควบคุมด้วย Transaction และ Constraint:<br>
+                  <pre><code>START TRANSACTION;
+UPDATE accounts SET balance = balance - 3000 WHERE id = 1;
+UPDATE accounts SET balance = balance + 3000 WHERE id = 2;
+COMMIT;
+-- พร้อมกำหนด CHECK (balance &gt;= 0)</code></pre>
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
 
         <section class="chapter search-unit" id="exam-tactics" data-tab="EXAM PROCEDURE">
@@ -1222,14 +1536,30 @@ Dependent(emp_id FK,
 UNION
 SELECT ... FROM A RIGHT JOIN B ON ...;</code></pre></div></details>
           <details class="quiz"><summary>15) ตรวจ query นี้: SELECT department, name, AVG(salary) FROM employees GROUP BY department;</summary><div class="answer"><p><code>name</code> ไม่ได้อยู่ใน aggregate function และไม่ได้อยู่ใน GROUP BY จึงไม่ชัดว่าจะเลือกชื่อใดจากแต่ละกลุ่ม ควรลบ name หรือเพิ่ม grouping ตามความหมายที่โจทย์ต้องการ</p></div></details>
+          <details class="quiz"><summary>16) π name (σ gpa&gt;3.0 (Student)) กับ σ gpa&gt;3.0 (π name (Student)) สมมูลกันหรือไม่ เพราะเหตุใด?</summary><div class="answer"><p><strong>ไม่สมมูลกัน</strong> เพราะนิพจน์ขวาทำ Projection คัดเหลือเฉพาะคอลัมน์ <code>name</code> ก่อน ทำให้ไม่มี attribute <code>gpa</code> เหลือให้ Selection ทำการตรวจสอบเงื่อนไข (เกิด Schema/Syntax Error)</p></div></details>
+          <details class="quiz"><summary>17) เขียน SQL ปรับเงินเดือน: ถ้าเงินเดือนเกิน 100,000 ปรับขึ้น 3% นอกนั้นปรับขึ้น 5%</summary><div class="answer"><pre><code>UPDATE employees
+SET salary = CASE
+  WHEN salary &gt; 100000 THEN salary * 1.03
+  ELSE salary * 1.05
+END;</code></pre></div></details>
+          <details class="quiz"><summary>18) View แบบใดที่สามารถทำ INSERT/UPDATE/DELETE ข้อมูลผ่าน View ไปยังตารางจริงได้?</summary><div class="answer"><p>ต้องเป็น <strong>Simple Updatable View</strong> ที่ตรงตามเงื่อนไข: 1) ตารางใน <code>FROM</code> มีตารางเดียว, 2) ใน <code>SELECT</code> มีเฉพาะชื่อคอลัมน์ตรงๆ (ไม่มี aggregate, DISTINCT หรือ expression), 3) ไม่มี <code>GROUP BY</code> หรือ <code>HAVING</code>, และ 4) คอลัมน์ที่ไม่ได้เลือกในตารางจริงต้องยอมรับค่า NULL หรือมี DEFAULT</p></div></details>
+          <details class="quiz"><summary>19) Index แบบ B-Tree ช่วยเพิ่มความเร็วของ Query เมื่อเทียบกับ Full Table Scan อย่างไร?</summary><div class="answer"><p><strong>Full Table Scan ($O(N)$):</strong> ต้องกวาดอ่านทุกบล็อกข้อมูลบน Disk ทีละแถวจนครบตาราง<br><strong>B-Tree Index ($O(\log N)$):</strong> ข้อมูลถูกจัดเรียงเป็นต้นไม้สมดุล ทำให้ค้นหาแบบ Binary Search ได้ในเวลา $O(\log N)$ โดยอ่าน Disk เพียง 3–4 หน้าเท่านั้น</p></div></details>
+          <details class="quiz"><summary>20) เขียน SQL ให้สิทธิ์ Role assistant สามารถ SELECT ทุกคอลัมน์ และ UPDATE เฉพาะ copies และ last_borrowed</summary><div class="answer"><pre><code>GRANT SELECT ON books TO assistant;
+GRANT UPDATE (available_copies, last_borrowed) ON books TO assistant;</code></pre></div></details>
+          <details class="quiz"><summary>21) Entity Customer มี customer_id (PK), name และ phone_numbers (Multi-valued) แปลงเป็น Schema อย่างไร?</summary><div class="answer"><pre><code>Customer(customer_id PK, name)
+Customer_Phones(customer_id FK, phone_number,
+                phone_type,
+                PRIMARY KEY (customer_id, phone_number),
+                FOREIGN KEY (customer_id) REFERENCES Customer(customer_id))</code></pre><p>Multi-valued attribute ต้องแยกเป็นตารางใหม่ โดยมี PK ของ parent รวมกับค่านั้นเป็น Composite PK</p></div></details>
+          <details class="quiz"><summary>22) ตาราง Orders(order_id, cust_name, prod1, price1, prod2, price2) มีข้อบกพร่องใดและแก้อย่างไร?</summary><div class="answer"><p>เป็น <strong>Repeating Groups Anti-Pattern</strong> ข้อบกพร่องคือ: จำกัดจำนวนสินค้าที่ซื้อได้, ค้นหาสินค้ายากมาก (ต้อง OR หลายคอลัมน์), และเปลืองเนื้อที่ NULL เมื่อซื้อชิ้นเดียว<br><strong>วิธีแก้:</strong> แยกเป็น <code>Orders(order_id PK, customer_id FK, order_date)</code> และ <code>Order_Items(order_id FK, product_id FK, quantity, unit_price, PK(order_id, product_id))</code></p></div></details>
 
           <h3>คะแนนตนเอง</h3>
           <div class="table-wrap"><table>
             <thead><tr><th>ผล</th><th>แปลว่า</th><th>ทำต่อ</th></tr></thead>
             <tbody>
-              <tr><td>13–15 ถูก</td><td>พร้อมทบทวนรอบสุดท้าย</td><td>ฝึกเขียนเร็วและจัด cheat sheet</td></tr>
-              <tr><td>9–12 ถูก</td><td>เข้าใจภาพรวมแต่ยังมี pattern รั่ว</td><td>กลับไป SQL section ที่ตอบผิดและทำใหม่</td></tr>
-              <tr><td>0–8 ถูก</td><td>ควรสร้างพื้นฐานก่อนจำ syntax</td><td>อ่าน DBMS/keys แล้วทำ SQL core ทีละหัวข้อ</td></tr>
+              <tr><td>19–22 ถูก</td><td>พร้อมสอบทุกมิติ (A-Level)</td><td>ฝึกเขียนโค้ดจับเวลาและสรุป A4 Cheat Sheet</td></tr>
+              <tr><td>13–18 ถูก</td><td>เข้าใจโครงสร้างหลักดี</td><td>ทบทวนหัวข้อย่อย Views, Index, Auth และ ER Conversion</td></tr>
+              <tr><td>0–12 ถูก</td><td>ควรปรับพื้นฐานด่วน</td><td>อ่าน DBMS/Keys แล้วไล่ทำ SQL Core &amp; Subqueries ทีละหัวข้อ</td></tr>
             </tbody>
           </table></div>
         </section>
@@ -1243,9 +1573,11 @@ SELECT ... FROM A RIGHT JOIN B ON ...;</code></pre></div></details>
               <li><a href="doc/intro2rel-model.pdf">intro2rel-model.pdf</a> — relations, keys และ relational algebra</li>
               <li><a href="doc/sql-part1-2.pdf">sql-part1-2.pdf</a> — CREATE TABLE, constraints และ SELECT พื้นฐาน</li>
               <li><a href="doc/sql-part2.pdf">sql-part2.pdf</a> — predicates, joins, set, NULL และ aggregate</li>
-              <li><a href="doc/sql-part3.pdf">sql-part3.pdf</a> — nested/correlated/scalar subqueries และ WITH</li>
-              <li><a href="doc/intro2database-design.pdf">intro2database-design.pdf</a> — ER modeling และ cardinality</li>
-              <li><a href="doc/erdiagram2schema.pdf">erdiagram2schema.pdf</a> — กฎแปลง ER เป็น relational schema</li>
+              <li><a href="doc/sql-part3.pdf">sql-part3.pdf</a> — nested/correlated/scalar subqueries, CASE, COALESCE และ WITH</li>
+              <li><a href="doc/intermediate-sql-part1.pdf">intermediate-sql-part1.pdf</a> — Joined relations, Views, Updatable views และ Materialized views</li>
+              <li><a href="doc/sql-types-index-authorization.pdf">sql-types-index-authorization.pdf</a> — SQL data types, B-Tree index, performance optimization และ GRANT/REVOKE</li>
+              <li><a href="doc/intro2database-design.pdf">intro2database-design.pdf</a> — ER modeling, attribute types และ cardinality</li>
+              <li><a href="doc/erdiagram2schema.pdf">erdiagram2schema.pdf</a> — กฎแปลง ER เป็น relational schema (1:1, 1:N, M:N, weak, multi-valued)</li>
             </ul>
             <p class="small">HTML นี้เรียบเรียงเพื่อการทบทวน ไม่ได้แทนสไลด์ทั้งหมด หากตัวอย่างหรือ convention ใดต่างกัน ให้ยึดเอกสารอาจารย์เป็นหลัก</p>
           </div>
@@ -1255,6 +1587,13 @@ SELECT ... FROM A RIGHT JOIN B ON ...;</code></pre></div></details>
   </div>
 
   <footer class="footer">
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap;">
+      <a href="index.html" style="color: #9bbff2; text-decoration: none;">🏠 หน้าหลัก Portal</a>
+      <span style="color: #557199;">·</span>
+      <a href="database-midterm-study-guide.html" style="color: white; font-weight: bold; text-decoration: none;">📖 คู่มืออ่านสอบฉบับเต็ม</a>
+      <span style="color: #557199;">·</span>
+      <a href="cheat-sheet.html" style="color: #9bbff2; text-decoration: none;">📑 A4 Cheat Sheet</a>
+    </div>
     <strong>Database Midterm 2026</strong><br>
     อ่านให้เข้าใจ → ปิดโน้ตแล้วเขียน → เปิดตรวจเหตุผล → จดเฉพาะสิ่งที่ยังผิดลง cheat sheet<br>
     <span class="small">Typography: Sarabun via Google Fonts</span>
