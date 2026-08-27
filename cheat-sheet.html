@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Database Midterm 2026 cheat sheet สำหรับคัดลงกระดาษ A4 สองด้าน">
+  <title>Database Midterm 2026 — A4 Cheat Sheet</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #11213a;
+      --muted: #53627a;
+      --paper: #eef2f8;
+      --sheet: #fff;
+      --line: #b7c4d7;
+      --blue: #2157a6;
+      --blue-deep: #15396f;
+      --blue-soft: #e9f0fb;
+      --yellow: #ffd84d;
+      --yellow-soft: #fff7cf;
+      --red: #a63325;
+      --red-soft: #fff0ed;
+      --green: #26705a;
+      --green-soft: #e9f6f0;
+      --code: #0c1c32;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: "Sarabun", Tahoma, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      line-height: 1.34;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-underline-offset: .16em; }
+    button { font: inherit; cursor: pointer; }
+    code, pre { font-family: var(--mono); }
+    :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+    ::selection { color: var(--ink); background: var(--yellow); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px max(16px, calc((100vw - 210mm) / 2));
+      color: white;
+      background: var(--ink);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+    }
+    .topbar strong { margin-right: auto; font-weight: 800; }
+    .topbar a, .topbar button {
+      min-height: 40px;
+      padding: 8px 12px;
+      color: white;
+      background: transparent;
+      border: 1px solid #8b9bb1;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .topbar a:hover, .topbar button:hover { background: #263a57; border-color: white; }
+
+    .pages { display: grid; gap: 28px; justify-content: center; padding: 28px 16px 60px; }
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 8mm;
+      background: var(--sheet);
+      box-shadow: 0 18px 48px rgba(17, 33, 58, .18);
+    }
+    .sheet-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 5mm;
+      padding-bottom: 3mm;
+      border-bottom: 4px solid var(--blue);
+    }
+    .sheet-head h1 { margin: 0; font-size: 22pt; line-height: .98; letter-spacing: -.035em; font-weight: 800; }
+    .sheet-head h1 span { display: block; margin-top: 3px; color: var(--blue); font-size: 10pt; letter-spacing: 0; }
+    .sheet-meta { text-align: right; font-size: 7.6pt; line-height: 1.35; }
+    .sheet-meta strong { display: block; color: var(--blue-deep); font-size: 9pt; }
+
+    .weight-strip { display: grid; grid-template-columns: 25fr 60fr 15fr; margin: 0 0 4mm; min-height: 8mm; }
+    .weight-strip span { display: grid; place-items: center; padding: 3px; font-size: 7.2pt; font-weight: 800; text-align: center; }
+    .weight-strip span:nth-child(1) { background: #abc5e6; }
+    .weight-strip span:nth-child(2) { background: var(--yellow); }
+    .weight-strip span:nth-child(3) { background: #e89487; }
+
+    .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4mm; align-items: start; }
+    .col { display: grid; gap: 3.2mm; align-content: start; }
+    .block {
+      min-width: 0;
+      padding-top: 2mm;
+      border-top: 2px solid var(--blue);
+      break-inside: avoid;
+    }
+    .block h2 { margin: 0 0 1.4mm; color: var(--blue-deep); font-size: 10.5pt; line-height: 1.1; font-weight: 800; }
+    .block h3 { margin: 2mm 0 .8mm; font-size: 8.3pt; line-height: 1.15; }
+    .block p { margin: 0 0 1.2mm; font-size: 7.4pt; }
+    .block ul, .block ol { margin: 0; padding-left: 4mm; font-size: 7.3pt; }
+    .block li { margin: 0 0 .6mm; }
+    .rule { color: var(--blue-deep); font-weight: 800; }
+    .warn { color: var(--red); font-weight: 800; }
+    .ok { color: var(--green); font-weight: 800; }
+    .note { padding: 1.5mm 2mm; background: var(--yellow-soft); border: 1px solid #e8bf2c; font-size: 7pt; }
+    .note--blue { background: var(--blue-soft); border-color: #acc2e4; }
+    .note--red { background: var(--red-soft); border-color: #e89487; }
+
+    pre {
+      overflow: hidden;
+      margin: 0 0 1.3mm;
+      padding: 1.8mm 2mm;
+      color: #eef6ff;
+      background: var(--code);
+      border-radius: 8px;
+      font-size: 6.25pt;
+      line-height: 1.34;
+      white-space: pre-wrap;
+      tab-size: 2;
+    }
+    code.inline { padding: 0 .7mm; color: var(--blue-deep); background: var(--blue-soft); border-radius: 4px; font-size: .94em; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 6.7pt; line-height: 1.25; }
+    th, td { padding: 1mm 1.2mm; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: white; background: var(--blue-deep); font-weight: 700; }
+    tbody tr:nth-child(even) { background: #f5f7fb; }
+    .result { margin-top: .8mm; }
+    .result caption { padding: 0 0 .7mm; color: var(--green); text-align: left; font-size: 6.7pt; font-weight: 800; }
+    .result th { color: var(--ink); background: var(--green-soft); border-color: #79b59e; }
+    .result td { padding: .7mm 1mm; }
+    .query-case { break-inside: avoid; }
+    .query-case + .query-case { margin-top: 2.4mm; }
+    .query-title { margin: 0 0 .8mm; font-size: 7.5pt; font-weight: 800; }
+
+    .schema-strip { margin-bottom: 3.2mm; padding: 2mm; background: var(--blue-soft); border: 1px solid #acc2e4; }
+    .schema-strip strong { color: var(--blue-deep); font-size: 7.4pt; }
+    .schema-strip code { font-size: 6.55pt; }
+    .logic-order { display: flex; flex-wrap: wrap; gap: 1mm; margin-top: 1mm; }
+    .logic-order span { padding: .8mm 1.2mm; color: white; background: var(--blue); font-family: var(--mono); font-size: 6.2pt; font-weight: 700; }
+    .logic-order span:not(:last-child)::after { content: " →"; color: var(--yellow); }
+
+    .mapping { display: grid; grid-template-columns: 19mm minmax(0, 1fr); border-top: 1px solid var(--line); font-size: 7pt; }
+    .mapping dt, .mapping dd { margin: 0; padding: 1.1mm 0; border-bottom: 1px solid var(--line); }
+    .mapping dt { color: var(--blue-deep); font-weight: 800; }
+    .mapping dd { padding-left: 1.5mm; }
+    .footer-line { margin-top: 3mm; padding-top: 1.5mm; border-top: 1px solid var(--line); color: var(--muted); font-size: 6.5pt; text-align: center; }
+
+    .sheet--sql .sheet-head { margin-bottom: 3.5mm; padding-bottom: 2mm; }
+    .sheet--sql .weight-strip { margin-bottom: 2.5mm; min-height: 7mm; }
+    .sheet--sql .schema-strip { margin-bottom: 2.2mm; padding: 1.4mm 1.7mm; }
+    .sheet--sql .cols { gap: 3.2mm; }
+    .sheet--sql .col { gap: 2mm; }
+    .sheet--sql .block { padding-top: 1.4mm; }
+    .sheet--sql .block h2 { margin-bottom: 1mm; font-size: 9.5pt; }
+    .sheet--sql .block p,
+    .sheet--sql .block ul,
+    .sheet--sql .block ol { font-size: 6.5pt; }
+    .sheet--sql .block li { margin-bottom: .3mm; }
+    .sheet--sql pre { margin-bottom: .8mm; padding: 1.25mm 1.5mm; font-size: 5.55pt; line-height: 1.25; }
+    .sheet--sql table { font-size: 5.9pt; line-height: 1.18; }
+    .sheet--sql th,
+    .sheet--sql td { padding: .65mm .85mm; }
+    .sheet--sql .result { margin-top: .5mm; }
+    .sheet--sql .result caption { padding-bottom: .45mm; font-size: 6pt; }
+    .sheet--sql .query-case + .query-case { margin-top: 1.4mm; }
+    .sheet--sql .query-title { margin-bottom: .5mm; font-size: 6.7pt; }
+    .sheet--sql .note { padding: 1mm 1.4mm; font-size: 6.2pt; }
+    .sheet--sql .footer-line { margin-top: 2mm; padding-top: 1mm; font-size: 6pt; }
+
+    @media (max-width: 850px) {
+      .topbar { flex-wrap: wrap; padding: 10px 12px; }
+      .topbar strong { width: 100%; }
+      .pages { padding: 12px 8px 36px; }
+      .sheet { width: 100%; min-height: 0; padding: 18px 14px; }
+      .sheet-head { grid-template-columns: 1fr; }
+      .sheet-meta { text-align: left; }
+      .cols { grid-template-columns: 1fr; }
+      .block p, .block li { font-size: .85rem; }
+      .sheet--sql .block p,
+      .sheet--sql .block li,
+      .sheet--sql .block ul,
+      .sheet--sql .block ol { font-size: .85rem; }
+      .block h2 { font-size: 1.28rem; }
+      .sheet--sql .block h2 { font-size: 1.28rem; }
+      pre, .sheet--sql pre { overflow-x: auto; font-size: .76rem; white-space: pre; }
+      table, .sheet--sql table { font-size: .76rem; }
+    }
+
+    @page { size: A4; margin: 0; }
+    @media print {
+      html, body { width: 210mm; margin: 0; background: white; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .topbar { display: none; }
+      .pages { display: block; padding: 0; }
+      .sheet {
+        width: 210mm;
+        height: 297mm;
+        min-height: 297mm;
+        margin: 0;
+        padding: 8mm;
+        overflow: hidden;
+        box-shadow: none;
+        break-after: page;
+        page-break-after: always;
+      }
+      .sheet:last-child { break-after: auto; page-break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    THESIS: กระดาษโกงความจำแบบ service manual สองด้าน—เห็น pattern, output และกับดักในจังหวะเดียว ไม่ใช่บทเรียนย่อเป็นย่อหน้า.
+    OWN-WORLD: กระดาษ A4 สีขาว หมึกกรมท่า เส้น blueprint-blue แถบน้ำหนักเหลือง และ code well สี navy; โครงสร้างแบนเหมือนเอกสารวิศวกรรม.
+    STORY: เริ่มจาก SQL ที่ออกมากที่สุด เห็นข้อมูลตัวอย่างเดียวกัน query และผลลัพธ์ แล้วพลิกไปทบทวน DBMS, algebra และ ER mapping.
+    FIRST VIEWPORT: แถบเครื่องมือสีกรมท่าเหนือกระดาษ A4; หัวกระดาษบอกด้าน 1/2 และแถบน้ำหนัก 25/60/15 ก่อนเข้าสู่ SQL reference.
+    FORM: Two-sided A4 field reference inside the established Database Fault-Isolation Manual world.
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+  -->
+  <header class="topbar">
+    <strong>DB MIDTERM / A4 CHEAT SHEET</strong>
+    <a href="database-midterm-study-guide.html">เปิดคู่มือฉบับเต็ม</a>
+    <button type="button" onclick="window.print()">พิมพ์ / บันทึก PDF</button>
+  </header>
+
+  <main class="pages">
+    <section class="sheet sheet--sql" aria-labelledby="side-a-title">
+      <header class="sheet-head">
+        <h1 id="side-a-title">SQL PATTERN + OUTPUT<span>ด้านที่ 1 — ให้พื้นที่ SQL มากที่สุด เพราะคิดเป็น 60%</span></h1>
+        <div class="sheet-meta"><strong>EN4101 · 28 ส.ค. 2026</strong>13:00–16:00 · A4 เขียนมือสองด้าน</div>
+      </header>
+
+      <div class="weight-strip" aria-label="น้ำหนักเนื้อหาสอบ"><span>INTRO 25%</span><span>SQL 60%</span><span>DESIGN 15%</span></div>
+
+      <div class="schema-strip">
+        <strong>ชุดข้อมูลตัวอย่างเดียวกันทั้งหน้า:</strong>
+        <code>Student(sid, name, dept)</code> = (1,Ann,CS), (2,Bob,CS), (3,Cara,BIZ), (4,Dan,NULL) ·
+        <code>Course(cid,title)</code> = (C1,Database), (C2,Web), (C3,Art) ·
+        <code>Enroll(sid,cid,score)</code> = (1,C1,85), (2,C1,72), (2,C2,90), (3,C2,NULL)
+      </div>
+
+      <div class="cols">
+        <div class="col">
+          <section class="block">
+            <h2>SELECT / WHERE / ORDER</h2>
+            <div class="query-case">
+              <p class="query-title">เลือกคอลัมน์ กรองแถว ตั้งชื่อ และเรียงผล</p>
+              <pre><code>SELECT s.name, c.title, e.score
+FROM Student s
+JOIN Enroll e ON e.sid = s.sid
+JOIN Course c ON c.cid = e.cid
+WHERE e.score &gt;= 80
+ORDER BY e.score DESC;</code></pre>
+              <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th><th>title</th><th>score</th></tr></thead><tbody><tr><td>Bob</td><td>Web</td><td>90</td></tr><tr><td>Ann</td><td>Database</td><td>85</td></tr></tbody></table>
+            </div>
+            <div class="logic-order" aria-label="ลำดับการประมวลผล SQL"><span>FROM/JOIN</span><span>WHERE</span><span>GROUP BY</span><span>HAVING</span><span>SELECT</span><span>DISTINCT</span><span>ORDER BY</span></div>
+            <p class="note note--blue"><span class="rule">จำ:</span> <code class="inline">BETWEEN</code> รวมขอบ · <code class="inline">IN</code> เทียบหลายค่า · <code class="inline">LIKE '%x%'</code> มี x · <code class="inline">_</code> แทน 1 ตัว · AND ทำก่อน OR</p>
+          </section>
+
+          <section class="block">
+            <h2>JOIN — เลือกจากแถวที่ต้องรักษา</h2>
+            <div class="query-case">
+              <p class="query-title">INNER JOIN: เฉพาะ Student ที่มี Enrollment</p>
+              <pre><code>SELECT s.name, e.cid
+FROM Student s
+JOIN Enroll e ON e.sid = s.sid;</code></pre>
+              <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th><th>cid</th></tr></thead><tbody><tr><td>Ann</td><td>C1</td></tr><tr><td>Bob</td><td>C1</td></tr><tr><td>Bob</td><td>C2</td></tr><tr><td>Cara</td><td>C2</td></tr></tbody></table>
+            </div>
+            <div class="query-case">
+              <p class="query-title">LEFT JOIN: Student ทุกคน แม้ไม่ได้ลงวิชา</p>
+              <pre><code>SELECT s.name, e.cid
+FROM Student s
+LEFT JOIN Enroll e ON e.sid = s.sid;</code></pre>
+              <table class="result"><caption>ผลลัพธ์เพิ่มแถว unmatched</caption><thead><tr><th>name</th><th>cid</th></tr></thead><tbody><tr><td>Ann</td><td>C1</td></tr><tr><td>Bob</td><td>C1</td></tr><tr><td>Bob</td><td>C2</td></tr><tr><td>Cara</td><td>C2</td></tr><tr><td>Dan</td><td>NULL</td></tr></tbody></table>
+            </div>
+            <p class="note"><span class="rule">Anti-join:</span> LEFT JOIN แล้ว <code class="inline">WHERE right.key IS NULL</code> → หา A ที่ไม่มี B · MySQL จำลอง FULL JOIN ด้วย LEFT JOIN <code class="inline">UNION</code> RIGHT JOIN</p>
+          </section>
+
+          <section class="block">
+            <h2>NULL + SET</h2>
+            <pre><code>SELECT s.name, e.cid
+FROM Student s JOIN Enroll e ON e.sid=s.sid
+WHERE e.score IS NULL;</code></pre>
+            <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th><th>cid</th></tr></thead><tbody><tr><td>Cara</td><td>C2</td></tr></tbody></table>
+            <p><span class="warn">ห้าม:</span> <code class="inline">= NULL</code> · comparison กับ NULL → UNKNOWN · WHERE เก็บเฉพาะ TRUE · <code class="inline">5 + NULL → NULL</code></p>
+            <p><span class="rule">UNION</span> ตัดซ้ำ · <span class="rule">UNION ALL</span> เก็บซ้ำ · INTERSECT = อยู่ทั้งคู่ · EXCEPT = ชุดแรกแต่ไม่อยู่ชุดสอง · จำนวนคอลัมน์/ชนิดต้อง compatible</p>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="block">
+            <h2>AGGREGATE / GROUP BY / HAVING</h2>
+            <div class="query-case">
+              <pre><code>SELECT c.title,
+       COUNT(*) AS rows_n,
+       COUNT(e.score) AS score_n,
+       AVG(e.score) AS avg_score
+FROM Course c
+LEFT JOIN Enroll e ON e.cid = c.cid
+GROUP BY c.cid, c.title
+HAVING COUNT(e.score) &gt;= 1
+ORDER BY avg_score DESC;</code></pre>
+              <table class="result"><caption>ผลลัพธ์: NULL ถูกข้ามโดย COUNT(col)/AVG</caption><thead><tr><th>title</th><th>rows_n</th><th>score_n</th><th>avg_score</th></tr></thead><tbody><tr><td>Web</td><td>2</td><td>1</td><td>90.00</td></tr><tr><td>Database</td><td>2</td><td>2</td><td>78.50</td></tr></tbody></table>
+            </div>
+            <ul>
+              <li><code class="inline">COUNT(*)</code> นับทุกแถว; <code class="inline">COUNT(col)</code> ข้าม NULL</li>
+              <li>SUM/AVG/MIN/MAX ข้าม NULL; ถ้าไม่มี non-NULL มักคืน NULL</li>
+              <li>คอลัมน์ใน SELECT ที่ไม่ aggregate ต้องอยู่ใน GROUP BY</li>
+              <li><span class="rule">WHERE</span> กรองแถวก่อนกลุ่ม; <span class="rule">HAVING</span> กรองกลุ่มหลัง aggregate</li>
+            </ul>
+          </section>
+
+          <section class="block">
+            <h2>SUBQUERY / EXISTS / ANY / ALL</h2>
+            <div class="query-case">
+              <p class="query-title">IN: outer value อยู่ในชุดค่าจาก inner query</p>
+              <pre><code>SELECT name
+FROM Student
+WHERE sid IN (
+  SELECT sid FROM Enroll WHERE score &gt;= 80
+);</code></pre>
+              <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th></tr></thead><tbody><tr><td>Ann</td></tr><tr><td>Bob</td></tr></tbody></table>
+            </div>
+            <div class="query-case">
+              <p class="query-title">NOT EXISTS: นักศึกษาที่ไม่มี Enrollment</p>
+              <pre><code>SELECT s.name
+FROM Student s
+WHERE NOT EXISTS (
+  SELECT 1 FROM Enroll e WHERE e.sid=s.sid
+);</code></pre>
+              <table class="result"><caption>ผลลัพธ์</caption><thead><tr><th>name</th></tr></thead><tbody><tr><td>Dan</td></tr></tbody></table>
+            </div>
+            <p><code class="inline">x &gt; ANY(S)</code> มากกว่าอย่างน้อยหนึ่งค่า · <code class="inline">x &gt; ALL(S)</code> มากกว่าทุกค่า · scalar subquery ต้องคืน 1 ค่า</p>
+            <p class="note note--red"><span class="warn">กับดัก:</span> <code class="inline">NOT IN</code> อาจผิดคาดถ้า subquery มี NULL; งาน “ไม่มีความสัมพันธ์” ใช้ <code class="inline">NOT EXISTS</code> ปลอดภัยกว่า</p>
+          </section>
+
+          <section class="block">
+            <h2>DDL + CONSTRAINTS</h2>
+            <pre><code>CREATE TABLE Enroll (
+  sid INT,
+  cid CHAR(2),
+  score DECIMAL(5,2) CHECK(score BETWEEN 0 AND 100),
+  PRIMARY KEY (sid,cid),
+  FOREIGN KEY (sid) REFERENCES Student(sid),
+  FOREIGN KEY (cid) REFERENCES Course(cid)
+);</code></pre>
+            <table><thead><tr><th>Constraint</th><th>ป้องกัน</th></tr></thead><tbody><tr><td>PRIMARY KEY</td><td>ซ้ำ + NULL; ระบุแถวหลัก</td></tr><tr><td>FOREIGN KEY</td><td>อ้าง parent ที่ไม่มีจริง</td></tr><tr><td>UNIQUE</td><td>ค่าธุรกิจซ้ำ</td></tr><tr><td>NOT NULL</td><td>ข้อมูลบังคับหาย</td></tr><tr><td>CHECK</td><td>ค่านอกกฎ</td></tr></tbody></table>
+            <p><span class="rule">สร้าง:</span> parent ก่อน child · <span class="rule">ลบ:</span> child ก่อน parent · DELETE ลบแถว; DROP ลบทั้งตาราง</p>
+          </section>
+        </div>
+      </div>
+      <footer class="footer-line">ฝึกใช้โดยปิดผลลัพธ์ก่อน แล้วคำนวณจำนวนแถวและค่า NULL ด้วยมือ · หน้าเว็บนี้เป็นเอกสารอ่านก่อนสอบ ไม่ใช่เอกสารพิมพ์ที่นำเข้าห้องสอบได้</footer>
+    </section>
+
+    <section class="sheet" aria-labelledby="side-b-title">
+      <header class="sheet-head">
+        <h1 id="side-b-title">CONCEPT + DESIGN MAP<span>ด้านที่ 2 — Introduction 25% + Database Design 15% + กับดักรวม</span></h1>
+        <div class="sheet-meta"><strong>จำเหตุผล ไม่จำคำลอย ๆ</strong>นิยาม → ตัวอย่าง → กฎแปลง → จุดตรวจ</div>
+      </header>
+
+      <div class="cols">
+        <div class="col">
+          <section class="block">
+            <h2>DBMS FUNDAMENTALS</h2>
+            <dl class="mapping">
+              <dt>Database</dt><dd>ชุดข้อมูลที่สัมพันธ์กันและแบบแผนสำหรับเข้าถึงข้อมูล</dd>
+              <dt>DBMS</dt><dd>ระบบสำหรับนิยาม เก็บ ค้น แก้ไข ควบคุมสิทธิ์ concurrency และ recovery</dd>
+              <dt>Schema</dt><dd>แบบแปลน/โครงสร้าง เปลี่ยนไม่บ่อย</dd>
+              <dt>Instance</dt><dd>ข้อมูลจริง ณ เวลาหนึ่ง</dd>
+              <dt>Physical</dt><dd>เก็บอย่างไร: files, blocks, indexes</dd>
+              <dt>Logical</dt><dd>เก็บอะไร: entities, attributes, relationships</dd>
+              <dt>View</dt><dd>ผู้ใช้แต่ละกลุ่มเห็นข้อมูลส่วนใด</dd>
+              <dt>Data independence</dt><dd>เปลี่ยนระดับล่างโดยไม่กระทบระดับสูง/โปรแกรม</dd>
+              <dt>DDL</dt><dd>CREATE, ALTER, DROP — นิยาม schema/constraints</dd>
+              <dt>DML</dt><dd>SELECT, INSERT, UPDATE, DELETE — ใช้และแก้ข้อมูล</dd>
+            </dl>
+            <p class="note note--blue"><span class="rule">DBMS ดีกว่า file system:</span> ลด redundancy/inconsistency, แชร์ข้อมูล, enforce integrity, security, concurrency, atomicity และ recovery</p>
+          </section>
+
+          <section class="block">
+            <h2>RELATIONAL MODEL + KEYS</h2>
+            <table><thead><tr><th>คำ</th><th>จำแบบสั้น</th></tr></thead><tbody><tr><td>Relation</td><td>ตาราง; set ของ tuples</td></tr><tr><td>Tuple</td><td>แถวหนึ่งรายการ</td></tr><tr><td>Attribute</td><td>คอลัมน์หนึ่งคุณสมบัติ</td></tr><tr><td>Domain</td><td>เซตค่าที่คอลัมน์อนุญาต</td></tr><tr><td>Superkey</td><td>ระบุแถวไม่ซ้ำ แต่อาจมี attribute เกิน</td></tr><tr><td>Candidate key</td><td>minimal superkey; ตัดตัวใดออกแล้วไม่ unique</td></tr><tr><td>Primary key</td><td>candidate key ที่เลือกใช้; unique + not null</td></tr><tr><td>Foreign key</td><td>อ้าง candidate/primary key ของ relation อื่น</td></tr></tbody></table>
+            <p class="note"><span class="warn">จุดหลอก:</span> ถ้า {sid} เป็น candidate key แล้ว {sid,name} เป็น superkey แต่ไม่ใช่ candidate key เพราะมี name เกิน · FK เป็น NULL ได้ถ้าไม่ได้กำหนด NOT NULL</p>
+          </section>
+
+          <section class="block">
+            <h2>RELATIONAL ALGEBRA</h2>
+            <table><thead><tr><th>สัญลักษณ์</th><th>หน้าที่</th><th>SQL ใกล้เคียง</th></tr></thead><tbody><tr><td>σ<sub>P</sub>(r)</td><td>เลือกแถว</td><td>WHERE P</td></tr><tr><td>π<sub>A</sub>(r)</td><td>เลือกคอลัมน์/ตัดซ้ำแบบ set</td><td>SELECT DISTINCT A</td></tr><tr><td>r × s</td><td>จับคู่ทุกแถว</td><td>CROSS JOIN</td></tr><tr><td>r ⋈<sub>P</sub> s</td><td>product แล้วเลือกคู่ที่ P จริง</td><td>JOIN ... ON P</td></tr><tr><td>r ∪ s</td><td>อยู่ r หรือ s</td><td>UNION</td></tr><tr><td>r ∩ s</td><td>อยู่ทั้ง r และ s</td><td>INTERSECT</td></tr><tr><td>r − s</td><td>อยู่ r แต่ไม่อยู่ s</td><td>EXCEPT</td></tr><tr><td>ρ<sub>x</sub>(r)</td><td>เปลี่ยนชื่อ relation</td><td>r AS x</td></tr></tbody></table>
+            <pre><code>-- ชื่อ Student แผนก CS
+π name ( σ dept='CS' (Student) )
+
+-- อ่านข้างในออกข้างนอก
+join/รวม → selection/กรอง → projection/เลือกคอลัมน์</code></pre>
+            <p class="note note--red"><span class="warn">Set compatibility:</span> ∪, ∩, − ต้องมีจำนวน attribute เท่ากันและ domain ตำแหน่งเดียวกันเข้ากันได้</p>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="block">
+            <h2>ER MODELING — อ่านกฎธุรกิจ</h2>
+            <dl class="mapping">
+              <dt>Entity</dt><dd>สิ่งที่มีตัวตนและต้องเก็บข้อมูลแยก เช่น Student, Course</dd>
+              <dt>Attribute</dt><dd>คุณสมบัติของ entity/relationship; derived คำนวณได้; multivalued มีหลายค่า</dd>
+              <dt>Relationship</dt><dd>ความสัมพันธ์ระหว่าง entity เช่น Student enrolls Course</dd>
+              <dt>Cardinality</dt><dd>จำนวนสูงสุด: 1:1, 1:N, M:N</dd>
+              <dt>Participation</dt><dd>จำนวนต่ำสุด: total = ต้องเข้าร่วมอย่างน้อย 1; partial = อาจเป็น 0</dd>
+              <dt>Weak entity</dt><dd>ไม่มี key สมบูรณ์เอง; ใช้ owner key + partial key ผ่าน identifying relationship</dd>
+            </dl>
+            <h3>อ่านคำในโจทย์</h3>
+            <table><thead><tr><th>ประโยค</th><th>ตีความ</th></tr></thead><tbody><tr><td>แต่ละ A มี B ได้หลายตัว</td><td>A → B = N</td></tr><tr><td>แต่ละ B เป็นของ A เดียว</td><td>B → A = 1</td></tr><tr><td>A ทุกตัวต้องมี B</td><td>A total participation (min 1)</td></tr><tr><td>A อาจไม่มี B</td><td>A partial participation (min 0)</td></tr></tbody></table>
+          </section>
+
+          <section class="block">
+            <h2>ER → RELATIONAL SCHEMA</h2>
+            <table><thead><tr><th>รูปแบบ</th><th>กฎแปลง</th></tr></thead><tbody><tr><td>Strong entity</td><td>สร้าง table; simple attributes เป็น columns; key เป็น PK</td></tr><tr><td>Composite attribute</td><td>เก็บองค์ประกอบย่อย ไม่จำเป็นต้องเก็บ attribute รวม</td></tr><tr><td>Multivalued</td><td>สร้าง table ใหม่: owner_PK + value; PK มักเป็นคู่</td></tr><tr><td>Derived</td><td>มักไม่เก็บ; คำนวณเมื่อใช้</td></tr><tr><td>1:N</td><td>ใส่ PK ฝั่ง 1 เป็น FK ใน table ฝั่ง N</td></tr><tr><td>1:1</td><td>ใส่ FK ฝั่งใดฝั่งหนึ่ง; มักเลือกฝั่ง total participation เพื่อลด NULL; ใส่ UNIQUE</td></tr><tr><td>M:N</td><td>สร้าง junction table; FK ของทั้งสองฝั่ง; composite PK; relationship attributes อยู่ที่นี่</td></tr><tr><td>Weak entity</td><td>table มี owner PK เป็น FK + partial key; รวมกันเป็น PK</td></tr><tr><td>Ternary</td><td>สร้าง table มี FK ของ entity ทั้งสาม; กำหนด PK ตาม cardinality จริง</td></tr></tbody></table>
+            <pre><code>Student(sid PK, name)
+Course(cid PK, title)
+Enroll(
+  sid PK/FK → Student.sid,
+  cid PK/FK → Course.cid,
+  semester PK,
+  grade
+)</code></pre>
+            <p class="note note--blue"><span class="rule">ตรวจหลังแปลง:</span> ทุก table มี PK? · FK ชี้ key ที่มีจริง? · M:N มี junction? · relationship attributes อยู่ตารางความสัมพันธ์? · optional FK ยอม NULL หรือไม่?</p>
+          </section>
+
+          <section class="block">
+            <h2>EXAM FAULT CHECK — ตรวจคำตอบก่อนส่ง</h2>
+            <ol>
+              <li>เขียนคอลัมน์ที่โจทย์ต้องการก่อน แล้วหา table ที่ให้คอลัมน์นั้น</li>
+              <li>JOIN ทุกคู่มี <code class="inline">ON</code> หรือยัง? จำนวนแถวพองเพราะ Cartesian product หรือไม่?</li>
+              <li>โจทย์ขอ “ทุก A แม้ไม่มี B” ต้องรักษาฝั่ง A ด้วย LEFT JOIN</li>
+              <li>NULL ใช้ IS NULL; อย่าใช้ = NULL; ระวัง NOT IN + NULL</li>
+              <li>กรองแถวใช้ WHERE; กรอง COUNT/AVG ของกลุ่มใช้ HAVING</li>
+              <li>SELECT non-aggregate อยู่ใน GROUP BY ครบหรือไม่?</li>
+              <li>Composite PK/FK จำนวนและลำดับ columns ตรงกันหรือไม่?</li>
+              <li>Cardinality ถามจำนวนสูงสุด; participation ถามจำนวนต่ำสุด</li>
+            </ol>
+            <p class="note"><span class="ok">สูตรตอบ Short Answer:</span> นิยาม 1 ประโยค → เหตุผล/ผลกระทบ 1 ประโยค → ตัวอย่าง 1 ตัวอย่าง</p>
+          </section>
+        </div>
+      </div>
+      <footer class="footer-line">เขียนลงกระดาษจริงด้วยลายมือขนาดอ่านง่าย · ใช้สีน้ำเงิน/ดำ · เว้นช่องสำหรับกับดักที่ตนเองทำผิดระหว่างฝึกโจทย์</footer>
+    </section>
+  </main>
+</body>
+</html>
