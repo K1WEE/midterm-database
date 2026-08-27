@@ -280,8 +280,8 @@
     /* Cards Grid */
     .hub-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
       margin-bottom: 64px;
     }
     .hub-card {
@@ -312,6 +312,10 @@
       background: linear-gradient(135deg, #11213a 0%, #1e3556 100%);
       color: white;
     }
+    .hub-card--er .hub-card__head {
+      background: linear-gradient(135deg, #381a5c 0%, #6b359c 100%);
+      color: white;
+    }
     .hub-card__badge {
       display: inline-block;
       padding: 4px 10px;
@@ -328,6 +332,10 @@
     .hub-card--cheat .hub-card__badge {
       background: #84d8b9;
       color: #0d3826;
+    }
+    .hub-card--er .hub-card__badge {
+      background: #ffd84d;
+      color: #381a5c;
     }
     .hub-card__title {
       margin: 0 0 8px;
@@ -606,7 +614,7 @@
     }
 
     /* Responsive */
-    @media (max-width: 960px) {
+    @media (max-width: 1040px) {
       .hub-grid { grid-template-columns: 1fr; }
       .route-grid { grid-template-columns: repeat(2, 1fr); }
       .matrix-grid { grid-template-columns: repeat(2, 1fr); }
@@ -653,6 +661,12 @@
           <a href="cheat-sheet.html" class="nav-bar__link">
             <span class="nav-bar__link-icon">📑</span>
             <span>A4 Cheat Sheet</span>
+          </a>
+        </li>
+        <li>
+          <a href="er-diagram.html" class="nav-bar__link">
+            <span class="nav-bar__link-icon">📐</span>
+            <span>ER Diagram</span>
           </a>
         </li>
       </ul>
@@ -810,6 +824,54 @@
             </a>
           </div>
         </article>
+
+        <!-- Card 3: ER Diagram Visual Guide -->
+        <article class="hub-card hub-card--er">
+          <div class="hub-card__head">
+            <span class="hub-card__badge">ใหม่ · แผนภาพ SVG &amp; Simulator</span>
+            <h3 class="hub-card__title">คู่มือวาด ER Diagram</h3>
+            <p class="hub-card__subtitle">Visual ER Modeling Guide, Notation Shapes &amp; Schema Mapping</p>
+          </div>
+          <div class="hub-card__body">
+            <p class="hub-card__desc">
+              หน้าคู่มือเฉพาะทางสำหรับมองเห็นภาพชัดเจนว่าต้องวาด ER Diagram อย่างไร เข้าใจความหมายทุกรูปทรงเรขาคณิต พร้อม Interactive Cardinality Simulator
+            </p>
+            <ul class="feature-list">
+              <li>
+                <span class="feature-icon">📐</span>
+                <span><strong>คลังสัญลักษณ์มาตรฐาน:</strong> สี่เหลี่ยมเดี่ยว/คู่, ข้าวหลามตัดเดี่ยว/คู่, วงรีเดี่ยว/คู่/ประ/แตกกิ่ง, เส้นเดี่ยว/เส้นคู่</span>
+              </li>
+              <li>
+                <span class="feature-icon">✏️</span>
+                <span><strong>6 ขั้นตอนการวาดทีละขั้น:</strong> แยกคำนามเป็น Entity, ดึงคำกริยาเป็น Relationship และวิเคราะห์ Cardinality สองทิศทาง</span>
+              </li>
+              <li>
+                <span class="feature-icon">🏛️</span>
+                <span><strong>3 แผนภาพระบบจริง:</strong> ระบบลงทะเบียนมหาวิทยาลัย, HR Weak Entity (Dependent) และ E-Commerce Anti-Pattern Fix</span>
+              </li>
+              <li>
+                <span class="feature-icon">🧪</span>
+                <span><strong>Interactive Simulator:</strong> สลับดูผลลัพธ์การแปลง ER เป็น Relational Schema และคำสั่ง SQL DDL สดๆ</span>
+              </li>
+            </ul>
+
+            <div class="card-shortcuts">
+              <div class="card-shortcuts__title">ทางลัดหัวข้อในหน้า ER</div>
+              <div class="card-shortcuts__pills">
+                <a href="er-diagram.html#symbols">คลังสัญลักษณ์</a>
+                <a href="er-diagram.html#how-to-draw">วิธีวาด 6 สเต็ป</a>
+                <a href="er-diagram.html#scenarios">ตัวอย่างระบบจริง</a>
+                <a href="er-diagram.html#simulator">Simulator</a>
+              </div>
+            </div>
+          </div>
+          <div class="hub-card__foot">
+            <a href="er-diagram.html" class="btn btn--primary" style="background: #6b359c; border-color: #552780;">
+              <span>เปิดคู่มือ ER Diagram</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -846,7 +908,7 @@
             <h3 class="route-card__title">ER → Relational Schema</h3>
             <p class="route-card__desc">เน้นกฎการแปลง 1:1, 1:N, M:N และ Weak Entity ห้ามพลาดเรื่อง Foreign Key และ Composite PK</p>
           </div>
-          <a href="database-midterm-study-guide.html#er-model">เริ่มหมวด ER Model →</a>
+          <a href="er-diagram.html">เริ่มดูคู่มือ ER Diagram →</a>
         </div>
 
         <div class="route-card">
@@ -971,6 +1033,8 @@
         <a href="database-midterm-study-guide.html">คู่มืออ่านสอบฉบับเต็ม</a>
         <span>·</span>
         <a href="cheat-sheet.html">A4 Cheat Sheet</a>
+        <span>·</span>
+        <a href="er-diagram.html">คู่มือ ER Diagram</a>
       </div>
       <p style="margin: 0; font-size: .88rem; opacity: .85;">
         Database Systems Midterm Study Resource Pack · จัดทำขึ้นเพื่อการเตรียมตัวสอบกลางภาควิชา Database Systems 2026

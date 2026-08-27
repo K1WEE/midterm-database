@@ -1,0 +1,2021 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="คู่มือการวาดและทำความเข้าใจ ER Diagram (Entity-Relationship Diagram) สำหรับเตรียมสอบ Database Midterm 2026: สัญลักษณ์ครบทุกแบบ, ขั้นตอนการวาดทีละขั้น, ตัวอย่างระบบจริง, เปรียบเทียบ Chen vs Crow's Foot และ Interactive Simulator">
+  <title>ER Diagram Visual Guide — คู่มือการวาดและแปลง ER Diagram ฉบับสมบูรณ์ 2026</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #11213a;
+      --muted: #53627a;
+      --paper: #f4f7fb;
+      --sheet: #ffffff;
+      --line: #cbd5e4;
+      --line-strong: #8493aa;
+      --blue: #2157a6;
+      --blue-deep: #15396f;
+      --blue-soft: #e9f0fb;
+      --yellow: #ffd84d;
+      --yellow-soft: #fff7cf;
+      --red: #bd3d2c;
+      --red-soft: #fff0ed;
+      --green: #26705a;
+      --green-soft: #e9f6f0;
+      --purple: #6b359c;
+      --purple-soft: #f4ecfb;
+      --code: #0c1c32;
+      --radius: 12px;
+      --shadow-sm: 0 4px 12px rgba(17, 33, 58, .06);
+      --shadow-md: 0 12px 32px rgba(17, 33, 58, .10);
+      --shadow-lg: 0 20px 48px rgba(17, 33, 58, .15);
+      --sans: "Sarabun", Tahoma, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+    }
+    ::selection { background: var(--yellow); color: var(--ink); }
+    :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+    a { color: var(--blue); text-underline-offset: .18em; text-decoration-thickness: .08em; }
+    button { font: inherit; cursor: pointer; }
+    code, pre { font-family: var(--mono); }
+
+    /* Top Navigation Bar */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 24px;
+      color: white;
+      background: var(--ink);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+    }
+    .nav-bar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      white-space: nowrap;
+    }
+    .nav-bar__brand-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--yellow);
+      border-radius: 4px;
+      letter-spacing: 0;
+    }
+    .nav-bar__links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-bar__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 8px 14px;
+      color: #dce6f4;
+      text-decoration: none;
+      font-size: .92rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background .15s ease, color .15s ease;
+    }
+    .nav-bar__link:hover {
+      color: white;
+      background: rgba(255, 255, 255, .12);
+    }
+    .nav-bar__link[aria-current="page"] {
+      color: var(--ink);
+      background: var(--yellow);
+      font-weight: 800;
+    }
+    .nav-bar__link-icon {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    /* Container */
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
+      padding: 50px 20px 42px;
+      color: white;
+      background-color: var(--blue-deep);
+      background-image:
+        radial-gradient(ellipse at 85% 20%, rgba(33, 87, 166, .6) 0%, transparent 60%),
+        radial-gradient(ellipse at 15% 90%, rgba(107, 53, 156, .4) 0%, transparent 60%),
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+      border-bottom: 8px solid var(--yellow);
+    }
+    .hero__content {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      margin-bottom: 16px;
+      color: #0b1f3b;
+      background: var(--yellow);
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .hero__title {
+      margin: 0 0 16px;
+      font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+    .hero__title span {
+      display: block;
+      color: var(--yellow);
+      font-size: .58em;
+      font-weight: 700;
+      margin-top: 6px;
+      letter-spacing: 0;
+    }
+    .hero__desc {
+      margin: 0 0 24px;
+      max-width: 72ch;
+      color: #e2ecf9;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* Sub Navigation Bar (Anchor Pills) */
+    .subnav {
+      position: sticky;
+      top: 60px;
+      z-index: 90;
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 4px 12px rgba(17, 33, 58, .05);
+      padding: 10px 0;
+      margin-bottom: 36px;
+    }
+    .subnav__list {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0;
+      margin: 0;
+      list-style: none;
+      scrollbar-width: thin;
+    }
+    .subnav__item a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: all .15s ease;
+    }
+    .subnav__item a:hover {
+      color: var(--blue-deep);
+      background: var(--blue-soft);
+      border-color: var(--blue);
+    }
+
+    /* Layout Sections */
+    .section-block {
+      margin-bottom: 48px;
+      scroll-margin-top: 130px;
+    }
+    .section-header {
+      margin-bottom: 24px;
+    }
+    .section-header__tag {
+      display: inline-block;
+      padding: 3px 10px;
+      margin-bottom: 8px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--blue-deep);
+      background: var(--blue-soft);
+      border-radius: 4px;
+    }
+    .section-header__title {
+      margin: 0 0 8px;
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--ink);
+    }
+    .section-header__desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+      max-width: 80ch;
+    }
+
+    /* Cards & Panels */
+    .panel {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel--primary {
+      border-top: 4px solid var(--blue);
+    }
+    .panel--yellow {
+      border-top: 4px solid var(--yellow);
+    }
+    .panel--green {
+      border-top: 4px solid var(--green);
+    }
+    .panel--purple {
+      border-top: 4px solid var(--purple);
+    }
+    .panel--red {
+      border-top: 4px solid var(--red);
+    }
+
+    /* Grid System */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    /* Symbol Catalog Visual Cards */
+    .symbol-card {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .symbol-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--blue);
+    }
+    .symbol-card__svg {
+      width: 100%;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      background: #fafcff;
+      border-radius: 8px;
+      border: 1px dashed #d8e2ef;
+    }
+    .symbol-card__name {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    .symbol-card__thai {
+      font-size: .88rem;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .symbol-card__desc {
+      font-size: .84rem;
+      color: var(--muted);
+      line-height: 1.45;
+      text-align: left;
+      width: 100%;
+      background: var(--paper);
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .symbol-card__example {
+      margin-top: 6px;
+      font-size: .78rem;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+
+    /* Step-by-Step Drawing Guide */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+    .step-list::before {
+      content: "";
+      position: absolute;
+      top: 30px;
+      bottom: 30px;
+      left: 24px;
+      width: 3px;
+      background: var(--line);
+      z-index: 0;
+    }
+    .step-item {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 20px;
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-badge {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--blue-deep);
+      color: white;
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(21, 57, 111, .3);
+    }
+    .step-body {
+      flex: 1;
+    }
+    .step-title {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .step-desc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: .98rem;
+    }
+    .step-box {
+      background: var(--paper);
+      border-left: 4px solid var(--blue);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: .92rem;
+      margin-bottom: 12px;
+    }
+    .step-box strong { color: var(--blue-deep); }
+
+    /* SVG Diagram Container */
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .diagram-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--blue-deep);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .diagram-caption {
+      font-size: .88rem;
+      color: var(--muted);
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    /* Comparison Table */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .92rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: var(--blue-deep);
+      color: white;
+      font-weight: 700;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f9fbfe; }
+
+    /* Interactive Simulator */
+    .sim-card {
+      background: var(--sheet);
+      border: 2px solid var(--blue);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+    }
+    .sim-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+      background: var(--paper);
+      padding: 16px;
+      border-radius: 8px;
+    }
+    .sim-control-group label {
+      display: block;
+      font-weight: 700;
+      font-size: .9rem;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+    .sim-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      font-size: .95rem;
+      background: white;
+      font-family: var(--sans);
+      font-weight: 600;
+    }
+    .sim-result {
+      padding: 20px;
+      background: #fafcff;
+      border: 1px solid #c9daf8;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* Tabbed ER to Schema Converter */
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 20px;
+      padding-bottom: 2px;
+    }
+    .tab-btn {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-weight: 700;
+      font-size: .92rem;
+      color: var(--muted);
+      border-radius: 6px 6px 0 0;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+    .tab-btn.active {
+      color: var(--blue-deep);
+      border-bottom-color: var(--blue);
+      background: var(--blue-soft);
+    }
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Callout & Alerts */
+    .callout {
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: .95rem;
+    }
+    .callout--warn {
+      background: var(--yellow-soft);
+      border-left: 5px solid #d99b00;
+      color: #5c4100;
+    }
+    .callout--danger {
+      background: var(--red-soft);
+      border-left: 5px solid var(--red);
+      color: #6d1b11;
+    }
+    .callout--success {
+      background: var(--green-soft);
+      border-left: 5px solid var(--green);
+      color: #124032;
+    }
+    .callout--info {
+      background: var(--blue-soft);
+      border-left: 5px solid var(--blue);
+      color: var(--blue-deep);
+    }
+
+    /* Code Blocks */
+    pre {
+      background: var(--code);
+      color: #e6edf3;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+
+    /* Pitfall List */
+    .pitfall-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .pitfall-item {
+      background: var(--sheet);
+      border: 1px solid #f2c8c2;
+      border-left: 4px solid var(--red);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .pitfall-item h4 {
+      margin: 0 0 6px;
+      color: var(--red);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+    .pitfall-item p {
+      margin: 0;
+      font-size: .88rem;
+      color: var(--muted);
+    }
+
+    /* Quiz Accordion */
+    details.quiz {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color .15s ease;
+    }
+    details.quiz[open] {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-sm);
+    }
+    details.quiz summary {
+      padding: 14px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #fafcff;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    details.quiz summary::-webkit-details-marker { display: none; }
+    details.quiz summary::after {
+      content: "▼";
+      font-size: .75rem;
+      color: var(--blue);
+      transition: transform .2s ease;
+    }
+    details.quiz[open] summary::after {
+      transform: rotate(180deg);
+    }
+    .quiz__content {
+      padding: 18px;
+      border-top: 1px solid var(--line);
+      background: white;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--ink);
+      color: #c9d7ec;
+      padding: 40px 20px 50px;
+      margin-top: 80px;
+      border-top: 4px solid var(--yellow);
+    }
+    .footer__inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .sim-controls { grid-template-columns: 1fr; }
+      .pitfall-list { grid-template-columns: 1fr; }
+      .step-item { flex-direction: column; gap: 12px; }
+      .step-list::before { left: 16px; }
+      .step-badge { width: 36px; height: 36px; font-size: 1rem; }
+    }
+    @media (max-width: 600px) {
+      .grid-4 { grid-template-columns: 1fr; }
+      .nav-bar { flex-wrap: wrap; padding: 10px 14px; }
+      .nav-bar__brand { width: 100%; justify-content: space-between; }
+      .nav-bar__links { width: 100%; justify-content: space-between; overflow-x: auto; padding-top: 4px; }
+      .nav-bar__link { padding: 6px 10px; font-size: .84rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="nav-bar" aria-label="แถบนำทางหลัก">
+    <a href="index.html" class="nav-bar__brand">
+      <span>Database Midterm 2026</span>
+      <span class="nav-bar__brand-badge">ER VISUAL</span>
+    </a>
+    <nav>
+      <ul class="nav-bar__links">
+        <li>
+          <a href="index.html" class="nav-bar__link">
+            <span class="nav-bar__link-icon">🏠</span>
+            <span>หน้าหลัก</span>
+          </a>
+        </li>
+        <li>
+          <a href="database-midterm-study-guide.html" class="nav-bar__link">
+            <span class="nav-bar__link-icon">📖</span>
+            <span>คู่มือฉบับเต็ม</span>
+          </a>
+        </li>
+        <li>
+          <a href="cheat-sheet.html" class="nav-bar__link">
+            <span class="nav-bar__link-icon">📑</span>
+            <span>Cheat Sheet</span>
+          </a>
+        </li>
+        <li>
+          <a href="er-diagram.html" class="nav-bar__link" aria-current="page">
+            <span class="nav-bar__link-icon">📐</span>
+            <span>ER Diagram</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero__content">
+      <span class="hero__badge">📐 VISUAL GUIDE &amp; DRAWING PLAYGROUND</span>
+      <h1 class="hero__title">
+        คู่มือการวาด ER Diagram และแปลงเป็น Schema
+        <span>เรียนรู้สัญลักษณ์ กฎการอ่าน Cardinality และวิธีวาดโจทย์จริงทีละสเต็ป</span>
+      </h1>
+      <p class="hero__desc">
+        รวมสัญลักษณ์มาตรฐาน Chen &amp; Crow's Foot Notation, เทคนิคการแยกแยะคำนาม-คำกริยา, การวิเคราะห์ Cardinality สองทิศทาง, แผนภาพตัวอย่างระบบจริง (University, HR Weak Entity, E-commerce) และเครื่องมือจำลองแปลงเป็น SQL Relational Schema
+      </p>
+    </div>
+  </section>
+
+  <!-- Sub Navigation Anchor Pills -->
+  <nav class="subnav" aria-label="สารบัญหมวด ER">
+    <div class="container">
+      <ul class="subnav__list">
+        <li class="subnav__item"><a href="#symbols">📦 1. คลังสัญลักษณ์มาตรฐาน</a></li>
+        <li class="subnav__item"><a href="#how-to-draw">✏️ 2. ขั้นตอนการวาด 6 สเต็ป</a></li>
+        <li class="subnav__item"><a href="#cardinality-rules">🔄 3. กฎวิเคราะห์ Cardinality</a></li>
+        <li class="subnav__item"><a href="#scenarios">🏛️ 4. ตัวอย่างระบบจริง 3 แบบ</a></li>
+        <li class="subnav__item"><a href="#conversion">⚡ 5. กฎแปลง ER → Schema</a></li>
+        <li class="subnav__item"><a href="#simulator">🧪 6. Interactive Simulator</a></li>
+        <li class="subnav__item"><a href="#pitfalls">⚠️ 7. 10 จุดผิดที่ห้ามทำ</a></li>
+        <li class="subnav__item"><a href="#quiz">🎯 8. แบบฝึกหัดวาดจริง</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- SECTION 1: SYMBOLS CATALOG -->
+    <section class="section-block" id="symbols">
+      <div class="section-header">
+        <span class="section-header__tag">PART 1: ER NOTATIONS &amp; SHAPES</span>
+        <h2 class="section-header__title">1. คลังสัญลักษณ์มาตรฐาน ER Diagram (Chen Notation)</h2>
+        <p class="section-header__desc">
+          การสอบ Database ของมหาวิทยาลัยส่วนใหญ่ใช้ <strong>Chen Notation</strong> เป็นหลัก ซึ่งใช้รูปทรงเรขาคณิตเฉพาะในการสื่อความหมาย ดูความแตกต่างของแต่ละรูปทรงได้ที่นี่
+        </p>
+      </div>
+
+      <!-- Entities & Relationships Grid -->
+      <h3 style="margin: 24px 0 12px; color: var(--blue-deep);">1.1 กลุ่ม Entity และ Relationship</h3>
+      <div class="grid-4">
+        <!-- 1. Strong Entity -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <rect x="10" y="12" width="120" height="36" rx="4" fill="#e9f0fb" stroke="#2157a6" stroke-width="2"/>
+              <text x="70" y="35" text-anchor="middle" fill="#15396f" font-weight="bold" font-size="13" font-family="sans-serif">Student</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Strong Entity</div>
+          <div class="symbol-card__thai">เอนทิตีปกติ (สี่เหลี่ยมผืนผ้าเดี่ยว)</div>
+          <div class="symbol-card__desc">วัตถุหรือสิ่งที่มีตัวตนจริงและมี Primary Key ระบุตัวเองได้โดยลำพัง</div>
+          <div class="symbol-card__example">เช่น Student, Course, Department</div>
+        </div>
+
+        <!-- 2. Weak Entity -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <rect x="8" y="10" width="124" height="40" rx="4" fill="#fff7cf" stroke="#d99b00" stroke-width="2"/>
+              <rect x="14" y="16" width="112" height="28" rx="2" fill="#fffdf2" stroke="#d99b00" stroke-width="1.5"/>
+              <text x="70" y="35" text-anchor="middle" fill="#5c4100" font-weight="bold" font-size="12" font-family="sans-serif">Dependent</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Weak Entity</div>
+          <div class="symbol-card__thai">เอนทิตีอ่อนแอ (สี่เหลี่ยมซ้อน 2 ชั้น)</div>
+          <div class="symbol-card__desc">ไม่มี PK ของตนเอง ต้องอาศัย PK ของ Owner Entity ร่วมกับ Partial Key</div>
+          <div class="symbol-card__example">เช่น Dependent (ผู้ติดตามพนักงาน)</div>
+        </div>
+
+        <!-- 3. Relationship -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <polygon points="70,8 130,30 70,52 10,30" fill="#e9f6f0" stroke="#26705a" stroke-width="2"/>
+              <text x="70" y="35" text-anchor="middle" fill="#124032" font-weight="bold" font-size="12" font-family="sans-serif">Enrolls</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Relationship</div>
+          <div class="symbol-card__thai">ความสัมพันธ์ (ข้าวหลามตัดเดี่ยว)</div>
+          <div class="symbol-card__desc">ความสัมพันธ์ระหว่าง Strong Entities ตั้งแต่ 2 ชุดขึ้นไป (คำกริยา)</div>
+          <div class="symbol-card__example">เช่น Student <em>Enrolls</em> Course</div>
+        </div>
+
+        <!-- 4. Identifying Relationship -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <polygon points="70,6 134,30 70,54 6,30" fill="#f4ecfb" stroke="#6b359c" stroke-width="2"/>
+              <polygon points="70,12 122,30 70,48 18,30" fill="#faf6fe" stroke="#6b359c" stroke-width="1.5"/>
+              <text x="70" y="35" text-anchor="middle" fill="#421a69" font-weight="bold" font-size="11" font-family="sans-serif">Has_Dep</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Identifying Rel.</div>
+          <div class="symbol-card__thai">ความสัมพันธ์ระบุ (ข้าวหลามตัด 2 ชั้น)</div>
+          <div class="symbol-card__desc">เชื่อมระหว่าง Owner Entity กับ Weak Entity โดยฝั่ง Weak ต้องเป็น Total Line</div>
+          <div class="symbol-card__example">เช่น Employee <em>Has</em> Dependent</div>
+        </div>
+      </div>
+
+      <!-- Attributes Grid -->
+      <h3 style="margin: 32px 0 12px; color: var(--blue-deep);">1.2 กลุ่ม Attributes (คุณลักษณะข้อมูล)</h3>
+      <div class="grid-4">
+        <!-- Simple Attribute -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <ellipse cx="70" cy="30" rx="55" ry="20" fill="#ffffff" stroke="#2157a6" stroke-width="2"/>
+              <text x="70" y="35" text-anchor="middle" fill="#11213a" font-size="12" font-family="sans-serif">salary</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Simple Attribute</div>
+          <div class="symbol-card__thai">วงรีเดี่ยวเส้นทึบ</div>
+          <div class="symbol-card__desc">ค่าเดี่ยวแบ่งย่อยไม่ได้ เก็บเป็นคอลัมน์ปกติในตาราง</div>
+          <div class="symbol-card__example">เช่น salary, title, credits</div>
+        </div>
+
+        <!-- Key Attribute (PK) -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <ellipse cx="70" cy="30" rx="55" ry="20" fill="#e9f0fb" stroke="#2157a6" stroke-width="2"/>
+              <text x="70" y="34" text-anchor="middle" fill="#15396f" font-weight="bold" font-size="12" font-family="sans-serif" text-decoration="underline">student_id</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Key Attribute (PK)</div>
+          <div class="symbol-card__thai">วงรี + ข้อความขีดเส้นใต้ทึบ</div>
+          <div class="symbol-card__desc">ระบุแต่ละแถวได้ไม่ซ้ำกัน เป็น Primary Key ใน Relational Schema</div>
+          <div class="symbol-card__example">เช่น <u>student_id</u>, <u>dept_id</u></div>
+        </div>
+
+        <!-- Partial Key -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <ellipse cx="70" cy="30" rx="55" ry="20" fill="#fff7cf" stroke="#d99b00" stroke-width="2"/>
+              <text x="70" y="34" text-anchor="middle" fill="#5c4100" font-weight="bold" font-size="11" font-family="sans-serif">dep_name</text>
+              <line x1="42" y1="39" x2="98" y2="39" stroke="#5c4100" stroke-width="1.5" stroke-dasharray="3,3"/>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Partial Key</div>
+          <div class="symbol-card__thai">วงรี + ข้อความขีดเส้นใต้ประ</div>
+          <div class="symbol-card__desc">ตัวจำแนก (Discriminator) ใน Weak Entity ซ้ำกันได้ระหว่าง Owner ต่างคน</div>
+          <div class="symbol-card__example">เช่น <span style="border-bottom: 2px dashed #5c4100;">dep_name</span>, <span style="border-bottom: 2px dashed #5c4100;">sec_id</span></div>
+        </div>
+
+        <!-- Multi-valued Attribute -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <ellipse cx="70" cy="30" rx="58" ry="22" fill="#fff0ed" stroke="#bd3d2c" stroke-width="2"/>
+              <ellipse cx="70" cy="30" rx="50" ry="16" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+              <text x="70" y="34" text-anchor="middle" fill="#bd3d2c" font-weight="bold" font-size="11" font-family="sans-serif">phone_numbers</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Multi-valued</div>
+          <div class="symbol-card__thai">วงรีซ้อน 2 ชั้น</div>
+          <div class="symbol-card__desc">Entity 1 ตัวมีค่านี้ได้หลายค่า ต้อง<strong>แตกเป็นตารางใหม่</strong>เสมอ!</div>
+          <div class="symbol-card__example">เช่น phone_numbers, skills</div>
+        </div>
+
+        <!-- Composite Attribute -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <!-- main -->
+              <ellipse cx="40" cy="30" rx="30" ry="14" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+              <text x="40" y="34" text-anchor="middle" fill="#15396f" font-size="10" font-weight="bold">Address</text>
+              <!-- branch lines -->
+              <line x1="70" y1="30" x2="95" y2="16" stroke="#8493aa" stroke-width="1.2"/>
+              <line x1="70" y1="30" x2="95" y2="44" stroke="#8493aa" stroke-width="1.2"/>
+              <!-- sub ovals -->
+              <ellipse cx="115" cy="16" rx="20" ry="10" fill="#ffffff" stroke="#8493aa" stroke-width="1"/>
+              <text x="115" y="19" text-anchor="middle" fill="#53627a" font-size="8">city</text>
+              <ellipse cx="115" cy="44" rx="20" ry="10" fill="#ffffff" stroke="#8493aa" stroke-width="1"/>
+              <text x="115" y="47" text-anchor="middle" fill="#53627a" font-size="8">zip</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Composite Attribute</div>
+          <div class="symbol-card__thai">วงรีแตกกิ่งก้านสาขา</div>
+          <div class="symbol-card__desc">ประกอบจากฟิลด์ย่อย แปลงเป็นคอลัมน์ย่อยในตารางเดิม (ไม่ต้องแยกตาราง)</div>
+          <div class="symbol-card__example">เช่น Name(first, last), Address</div>
+        </div>
+
+        <!-- Derived Attribute -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <ellipse cx="70" cy="30" rx="55" ry="20" fill="#f4ecfb" stroke="#6b359c" stroke-width="2" stroke-dasharray="5,4"/>
+              <text x="70" y="34" text-anchor="middle" fill="#6b359c" font-weight="bold" font-size="12" font-family="sans-serif">age</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Derived Attribute</div>
+          <div class="symbol-card__thai">วงรีเส้นประ</div>
+          <div class="symbol-card__desc">คำนวณได้จากข้อมูลอื่น ไม่ต้องสร้างคอลัมน์เก็บจริงในฐานข้อมูล</div>
+          <div class="symbol-card__example">เช่น age (คำนวณจาก DOB), total_price</div>
+        </div>
+
+        <!-- Total Participation -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <line x1="15" y1="27" x2="125" y2="27" stroke="#bd3d2c" stroke-width="2"/>
+              <line x1="15" y1="33" x2="125" y2="33" stroke="#bd3d2c" stroke-width="2"/>
+              <text x="70" y="18" text-anchor="middle" fill="#bd3d2c" font-size="10" font-weight="bold">Total (Must/Every)</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Total Participation</div>
+          <div class="symbol-card__thai">เส้นคู่เชื่อม (บังคับเข้าร่วม)</div>
+          <div class="symbol-card__desc">ทุก Entity ในเซตนั้น<strong>ต้อง</strong>มีความสัมพันธ์ แปลงเป็น FK <code>NOT NULL</code></div>
+          <div class="symbol-card__example">เช่น พนักงานทุกคนต้องมีแผนก</div>
+        </div>
+
+        <!-- Partial Participation -->
+        <div class="symbol-card">
+          <div class="symbol-card__svg">
+            <svg width="140" height="60" viewBox="0 0 140 60">
+              <line x1="15" y1="30" x2="125" y2="30" stroke="#2157a6" stroke-width="2"/>
+              <text x="70" y="18" text-anchor="middle" fill="#2157a6" font-size="10" font-weight="bold">Partial (Optional/May)</text>
+            </svg>
+          </div>
+          <div class="symbol-card__name">Partial Participation</div>
+          <div class="symbol-card__thai">เส้นเดี่ยวเชื่อม (ทางเลือก)</div>
+          <div class="symbol-card__desc">บาง Entity อาจไม่มีความสัมพันธ์นั้นก็ได้ ค่า FK ยอมรับ <code>NULL</code> ได้</div>
+          <div class="symbol-card__example">เช่น พนักงานอาจไม่มีผู้จัดการ/โปรเจกต์</div>
+        </div>
+      </div>
+
+      <!-- Notation Comparison Table -->
+      <div style="margin-top: 32px;">
+        <h3 style="color: var(--blue-deep);">1.3 ตารางเปรียบเทียบสัญลักษณ์ Chen vs Crow's Foot Notation</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>องค์ประกอบ</th>
+                <th>Chen Notation (ข้อสอบชอบออก)</th>
+                <th>Crow's Foot (นิยมใน Industry / Tools)</th>
+                <th>คำอธิบาย &amp; จุดสังเกต</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Entity</strong></td>
+                <td>สี่เหลี่ยมผืนผ้าเดี่ยว <code>[Student]</code></td>
+                <td>กล่องตารางมีหัวชื่อตาราง <code>| Student |</code></td>
+                <td>แทนตารางหลักใน Relational Database</td>
+              </tr>
+              <tr>
+                <td><strong>Weak Entity</strong></td>
+                <td>สี่เหลี่ยมผืนผ้าซ้อน 2 ชั้น <code>[[Dependent]]</code></td>
+                <td>กล่องมุมมน หรือ ขีดเส้นประรอบตาราง</td>
+                <td>ไม่มี PK ของตัวเอง ต้องพึ่งพา Owner</td>
+              </tr>
+              <tr>
+                <td><strong>Relationship</strong></td>
+                <td>สี่เหลี่ยมข้าวหลามตัด (Diamond) เชื่อมเส้น</td>
+                <td>เส้นตรงต่อระหว่างสองตารางโดยตรง (ไม่มีรูปข้าวหลามตัด)</td>
+                <td>Crow's foot เขียนชื่อกริยาไว้บนเส้นเชื่อมแทน</td>
+              </tr>
+              <tr>
+                <td><strong>Attributes</strong></td>
+                <td>วงรีโยงออกจากกล่อง Entity</td>
+                <td>เขียนเป็นบรรทัดข้างในกล่อง Entity</td>
+                <td>Chen วาดวงรีกระจายรอบกล่อง</td>
+              </tr>
+              <tr>
+                <td><strong>One (1)</strong></td>
+                <td>เขียนเลข <code>1</code> กำกับบนเส้น</td>
+                <td>ขีดเส้นขวางเดี่ยว/คู่ <code>—||—</code></td>
+                <td>มีความสัมพันธ์ได้มากสุด 1 ตัว</td>
+              </tr>
+              <tr>
+                <td><strong>Many (N หรือ M)</strong></td>
+                <td>เขียนตัวอักษร <code>N</code> หรือ <code>M</code> กำกับบนเส้น</td>
+                <td>สัญลักษณ์ตีนกา 3 แฉก <code>—&lt;</code></td>
+                <td>มีความสัมพันธ์ได้มากกว่า 1 ตัว</td>
+              </tr>
+              <tr>
+                <td><strong>Participation (Total / Partial)</strong></td>
+                <td>เส้นคู่ (Total) vs เส้นเดี่ยว (Partial)</td>
+                <td>วงกลม <code>O</code> (Optional/Partial) vs ขีด <code>|</code> (Mandatory/Total)</td>
+                <td>บังคับว่าต้องมีคู่ตรงข้ามหรือไม่</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: HOW TO DRAW STEP-BY-STEP -->
+    <section class="section-block" id="how-to-draw">
+      <div class="section-header">
+        <span class="section-header__tag">PART 2: SYSTEMATIC METHODOLOGY</span>
+        <h2 class="section-header__title">2. ขั้นตอนการวิเคราะห์โจทย์และวาด ER Diagram (6-Step Blueprint)</h2>
+        <p class="section-header__desc">
+          เมื่อเจอโจทย์บรรยายสถานการณ์ (Business Requirements) ในข้อสอบ ให้ทำตาม 6 ขั้นตอนนี้อย่างเป็นระบบเพื่อไม่ให้หลุดคะแนน
+        </p>
+      </div>
+
+      <div class="step-list">
+        <!-- Step 1 -->
+        <div class="step-item">
+          <div class="step-badge">1</div>
+          <div class="step-body">
+            <h3 class="step-title">แกะคำนามหลัก → สกัดเป็น Entities (สี่เหลี่ยมผืนผ้า)</h3>
+            <p class="step-desc">
+              ไฮไลต์คำนามที่เป็น <strong>"วัตถุหลักที่มีข้อมูลของตนเองหลายค่าและต้องการติดตาม"</strong> เช่น นักศึกษา, ภาควิชา, รายวิชา, อาจารย์, สินค้า, ลูกค้า
+            </p>
+            <div class="step-box">
+              <strong>💡 กฎสำคัญ:</strong> สิ่งที่เป็นเพียงค่าข้อมูลเดี่ยวๆ (เช่น ชื่อ, เบอร์โทร, วันเกิด) อย่าสร้างเป็น Entity ให้เก็บเป็น <em>Attribute</em> แทน!
+            </div>
+            <div style="font-family: var(--mono); font-size: .88rem; color: var(--blue-deep);">
+              ตัวอย่างโจทย์: "ในมหาวิทยาลัยประกอบด้วย <strong>ภาควิชา (Department)</strong>, <strong>อาจารย์ (Instructor)</strong>, และ <strong>นักศึกษา (Student)</strong>" → ได้ 3 Entities
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-item">
+          <div class="step-badge">2</div>
+          <div class="step-body">
+            <h3 class="step-title">แกะคำกริยา → สกัดเป็น Relationships (สี่เหลี่ยมข้าวหลามตัด)</h3>
+            <p class="step-desc">
+              หาคำกริยาที่เชื่อมระหว่าง 2 Entities เข้าด้วยกัน เช่น "สังกัด", "สอน", "ลงทะเบียน", "เป็นหัวหน้า", "สั่งซื้อ" แล้ววาดสี่เหลี่ยมข้าวหลามตัดคั่นกลาง
+            </p>
+            <div class="step-box">
+              <strong>💡 กฎสำคัญ:</strong> ห้ามลากเส้นเชื่อมระหว่าง <em>ข้าวหลามตัดกับข้าวหลามตัด</em> โดยตรง! ข้าวหลามตัดต้องเชื่อมกับ Entity (สี่เหลี่ยม) เสมอ
+            </div>
+            <div style="font-family: var(--mono); font-size: .88rem; color: var(--blue-deep);">
+              ตัวอย่าง: Student —[<strong>Enrolls</strong>]— Course, Department —[<strong>Employs</strong>]— Instructor
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-item">
+          <div class="step-badge">3</div>
+          <div class="step-body">
+            <h3 class="step-title">วิเคราะห์ Cardinality สองทิศทาง และ Participation</h3>
+            <p class="step-desc">
+              ถามคำถาม 2 ทิศทางเสมอเพื่อหาอัตราส่วน (1:1, 1:N, M:N) และดูคำว่า "ทุกคน/ต้องมี" (Total เส้นคู่) หรือ "อาจจะมี/ทางเลือก" (Partial เส้นเดี่ยว)
+            </p>
+            <div class="step-box">
+              <strong>สูตรถาม 2 ทิศทาง:</strong><br>
+              1. <em>"A ตัวหนึ่ง เชื่อมกับ B ได้กี่ตัว?"</em> (คำตอบคือตัวเลข/ตัวอักษรฝั่ง B)<br>
+              2. <em>"B ตัวหนึ่ง เชื่อมกับ A ได้กี่ตัว?"</em> (คำตอบคือตัวเลข/ตัวอักษรฝั่ง A)
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-item">
+          <div class="step-badge">4</div>
+          <div class="step-body">
+            <h3 class="step-title">ติดตั้ง Attributes (วงรี) และขีดเส้นใต้ Primary Key</h3>
+            <p class="step-desc">
+              วาดวงรีรอบๆ Entity แต่ละตัวเพื่อระบุคุณสมบัติ พร้อมจำแนกประเภทให้ถูกต้องตามสัญลักษณ์:
+            </p>
+            <ul style="margin: 0 0 12px 20px; font-size: .92rem;">
+              <li><strong>Primary Key:</strong> ขีดเส้นใต้ทึบใต้ชื่อ เช่น <code><u>student_id</u></code></li>
+              <li><strong>Multi-valued:</strong> มีได้หลายเบอร์/หลายทักษะ → วงรีซ้อน 2 ชั้น เช่น <code>((phone_number))</code></li>
+              <li><strong>Composite:</strong> มีส่วนย่อย → วาดวงรีย่อยแตกกิ่งออกจากวงรีหลัก เช่น <code>Address → (street, city, zip)</code></li>
+              <li><strong>Derived:</strong> คำนวณได้ → วงรีเส้นประ เช่น <code>( - - age - - )</code></li>
+              <li><strong>Relationship Attribute:</strong> ค่าที่เกิดเฉพาะเมื่อสองฝ่ายเจอกัน (เช่น <code>grade</code> ของการลงทะเบียน) → วาดวงรีต่อจากรูปข้าวหลามตัด!</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-item">
+          <div class="step-badge">5</div>
+          <div class="step-body">
+            <h3 class="step-title">ตรวจสอบ Weak Entity และความสัมพันธ์พิเศษ</h3>
+            <p class="step-desc">
+              ดูว่ามี Entity ใดที่ไม่สามารถระบุตัวตนได้โดยลำพังหรือไม่ (เช่น ประวัติผู้ติดตามพนักงาน, งวดการผ่อนชำระ)
+            </p>
+            <div class="step-box">
+              <strong>สูตร Weak Entity:</strong><br>
+              • ตัวกล่องเป็น <strong>สี่เหลี่ยมคู่</strong><br>
+              • ความสัมพันธ์ชี้ไปหา Owner เป็น <strong>ข้าวหลามตัดคู่ (Identifying Relationship)</strong><br>
+              • เส้นเชื่อมฝั่ง Weak Entity ต้องเป็น <strong>เส้นคู่ (Total Participation)</strong> เสมอ<br>
+              • คีย์จำแนกในกล่อง Weak เป็น <strong>Partial Key (ขีดเส้นใต้ประ)</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-item">
+          <div class="step-badge">6</div>
+          <div class="step-body">
+            <h3 class="step-title">ตรวจสอบความครบถ้วนและเตรียมแปลงเป็น Relational Schema</h3>
+            <p class="step-desc">
+              ตรวจทานว่าทุก Entity มี PK หรือยัง? ความสัมพันธ์ M:N เตรียมสร้างตารางกลาง (Junction Table) หรือยัง? 1:N รู้แล้วหรือยังว่าฝั่งใดนำ FK ไปวาง?
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: CARDINALITY RULES & TWO-WAY ANALYSIS -->
+    <section class="section-block" id="cardinality-rules">
+      <div class="section-header">
+        <span class="section-header__tag">PART 3: CARDINALITY ANALYSIS</span>
+        <h2 class="section-header__title">3. กฎการวิเคราะห์ Cardinality สองทิศทาง</h2>
+        <p class="section-header__desc">
+          จุดที่นักศึกษาสับสนมากที่สุดคือ <em>"จะเอาเลข 1 หรือ N ไปใส่ไว้ฝั่งไหน?"</em> มาดูหลักคิดที่การันตีว่าไม่ใส่สลับฝั่งแน่นอน
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- 1:1 -->
+        <div class="panel panel--primary">
+          <h3 style="margin-top: 0; color: var(--blue-deep);">1 : 1 (One-to-One)</h3>
+          <p style="font-size: .9rem; color: var(--muted);">Entity A หนึ่งตัว มี B ได้ 1 ตัว และ B หนึ่งตัว เป็นของ A ได้ 1 ตัว</p>
+          <div style="background: #fafcff; padding: 12px; border-radius: 6px; border: 1px solid var(--line); margin-bottom: 12px; text-align: center;">
+            <svg width="240" height="70" viewBox="0 0 240 70">
+              <rect x="5" y="20" width="65" height="30" rx="3" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+              <text x="37" y="39" text-anchor="middle" font-size="10" font-weight="bold" fill="#15396f">Person</text>
+              
+              <line x1="70" y1="35" x2="105" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="78" y="28" font-size="11" font-weight="bold" fill="#2157a6">1</text>
+              
+              <polygon points="120,20 135,35 120,50 105,35" fill="#fff" stroke="#2157a6" stroke-width="1.5"/>
+              <text x="120" y="38" text-anchor="middle" font-size="7" font-weight="bold">Has</text>
+              
+              <line x1="135" y1="35" x2="170" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="160" y="28" font-size="11" font-weight="bold" fill="#2157a6">1</text>
+              
+              <rect x="170" y="20" width="65" height="30" rx="3" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+              <text x="202" y="39" text-anchor="middle" font-size="10" font-weight="bold" fill="#15396f">Passport</text>
+            </svg>
+          </div>
+          <div style="font-size: .88rem;">
+            <strong>ตัวอย่าง:</strong> คน 1 คน มี Passport ได้ 1 เล่ม และ Passport 1 เล่ม เป็นของคนได้ 1 คน<br>
+            <strong>การแปลงเป็น Schema:</strong> วาง FK ฝั่งใดก็ได้ (นิยมฝั่ง Total) และ<strong>ต้องใส่ <code>UNIQUE</code> บน FK</strong>
+          </div>
+        </div>
+
+        <!-- 1:N -->
+        <div class="panel panel--yellow">
+          <h3 style="margin-top: 0; color: #8a6500;">1 : N (One-to-Many)</h3>
+          <p style="font-size: .9rem; color: var(--muted);">Entity A หนึ่งตัว มี B ได้หลายตัว แต่ B แต่ละตัว สังกัด A ได้เพียง 1 ตัว</p>
+          <div style="background: #fafcff; padding: 12px; border-radius: 6px; border: 1px solid var(--line); margin-bottom: 12px; text-align: center;">
+            <svg width="240" height="70" viewBox="0 0 240 70">
+              <rect x="5" y="20" width="65" height="30" rx="3" fill="#fff7cf" stroke="#d99b00" stroke-width="1.5"/>
+              <text x="37" y="39" text-anchor="middle" font-size="9" font-weight="bold" fill="#5c4100">Department</text>
+              
+              <line x1="70" y1="35" x2="105" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="78" y="28" font-size="11" font-weight="bold" fill="#8a6500">1</text>
+              
+              <polygon points="120,20 135,35 120,50 105,35" fill="#fff" stroke="#d99b00" stroke-width="1.5"/>
+              <text x="120" y="38" text-anchor="middle" font-size="7" font-weight="bold">Employs</text>
+              
+              <line x1="135" y1="35" x2="170" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="160" y="28" font-size="11" font-weight="bold" fill="#8a6500">N</text>
+              
+              <rect x="170" y="20" width="65" height="30" rx="3" fill="#fff7cf" stroke="#d99b00" stroke-width="1.5"/>
+              <text x="202" y="39" text-anchor="middle" font-size="10" font-weight="bold" fill="#5c4100">Employee</text>
+            </svg>
+          </div>
+          <div style="font-size: .88rem;">
+            <strong>ตัวอย่าง:</strong> แผนกหนึ่งมีพนักงานได้หลายคน (N) แต่พนักงาน 1 คน อยู่ได้แผนกเดียว (1)<br>
+            <strong>การแปลงเป็น Schema:</strong> <strong>เอา PK ฝั่ง 1 ไปวางเป็น FK ในฝั่ง N</strong> (ใส่ <code>dept_id</code> ใน Employee)
+          </div>
+        </div>
+
+        <!-- M:N -->
+        <div class="panel panel--green">
+          <h3 style="margin-top: 0; color: var(--green);">M : N (Many-to-Many)</h3>
+          <p style="font-size: .9rem; color: var(--muted);">Entity A หนึ่งตัว มี B ได้หลายตัว และ B หนึ่งตัว มี A ได้หลายตัว</p>
+          <div style="background: #fafcff; padding: 12px; border-radius: 6px; border: 1px solid var(--line); margin-bottom: 12px; text-align: center;">
+            <svg width="240" height="70" viewBox="0 0 240 70">
+              <rect x="5" y="20" width="65" height="30" rx="3" fill="#e9f6f0" stroke="#26705a" stroke-width="1.5"/>
+              <text x="37" y="39" text-anchor="middle" font-size="10" font-weight="bold" fill="#124032">Student</text>
+              
+              <line x1="70" y1="35" x2="105" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="78" y="28" font-size="11" font-weight="bold" fill="#26705a">M</text>
+              
+              <polygon points="120,20 135,35 120,50 105,35" fill="#fff" stroke="#26705a" stroke-width="1.5"/>
+              <text x="120" y="38" text-anchor="middle" font-size="7" font-weight="bold">Enrolls</text>
+              
+              <line x1="135" y1="35" x2="170" y2="35" stroke="#11213a" stroke-width="1.5"/>
+              <text x="160" y="28" font-size="11" font-weight="bold" fill="#26705a">N</text>
+              
+              <rect x="170" y="20" width="65" height="30" rx="3" fill="#e9f6f0" stroke="#26705a" stroke-width="1.5"/>
+              <text x="202" y="39" text-anchor="middle" font-size="10" font-weight="bold" fill="#124032">Course</text>
+            </svg>
+          </div>
+          <div style="font-size: .88rem;">
+            <strong>ตัวอย่าง:</strong> นักศึกษา 1 คน ลงได้หลายวิชา (N) และวิชา 1 วิชา มีนักศึกษาได้หลายคน (M)<br>
+            <strong>การแปลงเป็น Schema:</strong> <strong>สร้างตารางใหม่ (Junction Table)</strong> โดยเอา PK ทั้งสองฝั่งเป็น Composite PK
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: THREE COMPLETE PRACTICAL SCENARIOS -->
+    <section class="section-block" id="scenarios">
+      <div class="section-header">
+        <span class="section-header__tag">PART 4: COMPLETE VISUAL SCENARIOS</span>
+        <h2 class="section-header__title">4. แผนภาพตัวอย่างระบบจริง 3 รูปแบบพร้อมคำอธิบายละเอียด</h2>
+        <p class="section-header__desc">
+          ศึกษาแผนภาพ ER Diagram ฉบับสมบูรณ์ที่จำลองข้อสอบจริง ครบทั้ง Composite, Multi-valued, Weak Entity, 1:1, 1:N, M:N และ Recursive Relationship
+        </p>
+      </div>
+
+      <!-- SCENARIO 1: UNIVERSITY REGISTRATION SYSTEM -->
+      <div class="panel panel--primary" style="margin-bottom: 32px;">
+        <div class="diagram-title">
+          <span>🏛️ ตัวอย่างที่ 1: ระบบลงทะเบียนเรียนมหาวิทยาลัย (University Enrollment System)</span>
+          <span style="font-size: .85rem; padding: 4px 10px; background: var(--blue-soft); color: var(--blue-deep); border-radius: 999px;">ครบเครื่อง: Composite, Multi-valued, Derived, M:N</span>
+        </div>
+        <p style="font-size: .95rem; color: var(--muted); margin-bottom: 16px;">
+          <strong>โจทย์สถานการณ์:</strong> นักศึกษา (Student) มีรหัสนักศึกษา (PK), ชื่อ (First, Last), วันเกิด (DOB), อายุ (Derived), และเบอร์โทรศัพท์ (มีได้หลายเบอร์) สังกัด 1 ภาควิชา (Department). แต่ละภาควิชามีอาจารย์ (Instructor) หลายคน. นักศึกษาลงทะเบียนเรียน (Enrolls) ในรายวิชา (Course) ได้หลายวิชา โดยการลงทะเบียนแต่ละครั้งจะบันทึกเกรด (Grade) และภาคการศึกษา (Semester). รายวิชาอาจมีวิชาบังคับก่อน (Prerequisite) ซึ่งเป็นรายวิชาอื่นในระบบ (Recursive Unary Relationship).
+        </p>
+
+        <!-- High Quality SVG Diagram for University -->
+        <div class="diagram-container">
+          <svg width="1020" height="460" viewBox="0 0 1020 460" style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
+            <!-- Background grid aesthetic -->
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f4f9" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="1020" height="460" fill="url(#grid)" rx="8"/>
+
+            <!-- ================= ENTITY: DEPARTMENT ================= -->
+            <rect x="50" y="200" width="130" height="48" rx="4" fill="#e9f0fb" stroke="#2157a6" stroke-width="2"/>
+            <text x="115" y="229" text-anchor="middle" font-weight="bold" font-size="14" fill="#15396f">Department</text>
+
+            <!-- Dept Attributes -->
+            <!-- dept_id PK -->
+            <line x1="115" y1="200" x2="70" y2="145" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="70" cy="145" rx="38" ry="16" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="70" y="149" text-anchor="middle" font-size="11" font-weight="bold" fill="#15396f" text-decoration="underline">dept_id</text>
+
+            <!-- dept_name -->
+            <line x1="115" y1="200" x2="155" y2="145" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="155" cy="145" rx="42" ry="16" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="155" y="149" text-anchor="middle" font-size="11" fill="#11213a">dept_name</text>
+
+            <!-- building -->
+            <line x1="115" y1="248" x2="115" y2="295" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="115" cy="295" rx="38" ry="16" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="115" y="299" text-anchor="middle" font-size="11" fill="#11213a">building</text>
+
+            <!-- ================= RELATIONSHIP: MAJOR_IN (Dept 1:N Student) ================= -->
+            <line x1="180" y1="224" x2="250" y2="224" stroke="#11213a" stroke-width="1.5"/>
+            <text x="195" y="215" font-size="12" font-weight="bold" fill="#2157a6">1</text>
+            <polygon points="280,204 310,224 280,244 250,224" fill="#ffffff" stroke="#2157a6" stroke-width="1.8"/>
+            <text x="280" y="228" text-anchor="middle" font-size="10" font-weight="bold" fill="#15396f">Belongs_To</text>
+            <!-- Double line on Student side if total participation (every student must have dept) -->
+            <line x1="310" y1="221" x2="380" y2="221" stroke="#bd3d2c" stroke-width="1.8"/>
+            <line x1="310" y1="227" x2="380" y2="227" stroke="#bd3d2c" stroke-width="1.8"/>
+            <text x="360" y="215" font-size="12" font-weight="bold" fill="#bd3d2c">N</text>
+
+            <!-- ================= ENTITY: STUDENT ================= -->
+            <rect x="380" y="200" width="130" height="48" rx="4" fill="#e9f0fb" stroke="#2157a6" stroke-width="2"/>
+            <text x="445" y="229" text-anchor="middle" font-weight="bold" font-size="14" fill="#15396f">Student</text>
+
+            <!-- Student Attributes -->
+            <!-- student_id PK -->
+            <line x1="445" y1="200" x2="340" y2="130" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="340" cy="130" rx="42" ry="16" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="340" y="134" text-anchor="middle" font-size="11" font-weight="bold" fill="#15396f" text-decoration="underline">student_id</text>
+
+            <!-- Name (Composite) -->
+            <line x1="445" y1="200" x2="435" y2="130" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="435" cy="130" rx="35" ry="16" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="435" y="134" text-anchor="middle" font-size="11" font-weight="bold" fill="#15396f">name</text>
+            <!-- Sub-attributes of Name -->
+            <line x1="435" y1="114" x2="400" y2="70" stroke="#8493aa" stroke-width="1"/>
+            <ellipse cx="400" cy="70" rx="28" ry="12" fill="#ffffff" stroke="#8493aa" stroke-width="1"/>
+            <text x="400" y="73" text-anchor="middle" font-size="9" fill="#53627a">first_name</text>
+            <line x1="435" y1="114" x2="465" y2="70" stroke="#8493aa" stroke-width="1"/>
+            <ellipse cx="465" cy="70" rx="28" ry="12" fill="#ffffff" stroke="#8493aa" stroke-width="1"/>
+            <text x="465" y="73" text-anchor="middle" font-size="9" fill="#53627a">last_name</text>
+
+            <!-- DOB (Stored) -->
+            <line x1="445" y1="200" x2="525" y2="130" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="525" cy="130" rx="32" ry="16" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="525" y="134" text-anchor="middle" font-size="11" fill="#11213a">dob</text>
+
+            <!-- Age (Derived) -->
+            <line x1="525" y1="114" x2="560" y2="70" stroke="#8493aa" stroke-width="1" stroke-dasharray="3,3"/>
+            <ellipse cx="560" cy="70" rx="30" ry="14" fill="#f4ecfb" stroke="#6b359c" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="560" y="74" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b359c">age</text>
+
+            <!-- Phone_numbers (Multi-valued) -->
+            <line x1="445" y1="248" x2="445" y2="310" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="445" cy="310" rx="55" ry="20" fill="#fff0ed" stroke="#bd3d2c" stroke-width="1.8"/>
+            <ellipse cx="445" cy="310" rx="48" ry="15" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.2"/>
+            <text x="445" y="314" text-anchor="middle" font-size="10" font-weight="bold" fill="#bd3d2c">phone_numbers</text>
+
+            <!-- ================= RELATIONSHIP: ENROLLS (Student M:N Course) ================= -->
+            <line x1="510" y1="224" x2="580" y2="224" stroke="#11213a" stroke-width="1.5"/>
+            <text x="525" y="215" font-size="12" font-weight="bold" fill="#26705a">M</text>
+            <polygon points="615,204 650,224 615,244 580,224" fill="#e9f6f0" stroke="#26705a" stroke-width="1.8"/>
+            <text x="615" y="228" text-anchor="middle" font-size="11" font-weight="bold" fill="#124032">Enrolls</text>
+            
+            <!-- Relationship Attributes on Enrolls -->
+            <!-- Grade -->
+            <line x1="615" y1="244" x2="585" y2="300" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="585" cy="300" rx="30" ry="15" fill="#ffffff" stroke="#26705a" stroke-width="1.5"/>
+            <text x="585" y="304" text-anchor="middle" font-size="10" fill="#124032">grade</text>
+
+            <!-- Semester -->
+            <line x1="615" y1="244" x2="650" y2="300" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="650" cy="300" rx="35" ry="15" fill="#ffffff" stroke="#26705a" stroke-width="1.5"/>
+            <text x="650" y="304" text-anchor="middle" font-size="10" fill="#124032">semester</text>
+
+            <line x1="650" y1="224" x2="720" y2="224" stroke="#11213a" stroke-width="1.5"/>
+            <text x="700" y="215" font-size="12" font-weight="bold" fill="#26705a">N</text>
+
+            <!-- ================= ENTITY: COURSE ================= -->
+            <rect x="720" y="200" width="130" height="48" rx="4" fill="#e9f0fb" stroke="#2157a6" stroke-width="2"/>
+            <text x="785" y="229" text-anchor="middle" font-weight="bold" font-size="14" fill="#15396f">Course</text>
+
+            <!-- Course Attributes -->
+            <!-- course_id PK -->
+            <line x1="785" y1="200" x2="735" y2="135" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="735" cy="135" rx="40" ry="16" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="735" y="139" text-anchor="middle" font-size="11" font-weight="bold" fill="#15396f" text-decoration="underline">course_id</text>
+
+            <!-- title -->
+            <line x1="785" y1="200" x2="815" y2="135" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="815" cy="135" rx="35" ry="16" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="815" y="139" text-anchor="middle" font-size="11" fill="#11213a">title</text>
+
+            <!-- credits -->
+            <line x1="785" y1="248" x2="785" y2="300" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="785" cy="300" rx="32" ry="16" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="785" y="304" text-anchor="middle" font-size="11" fill="#11213a">credits</text>
+
+            <!-- ================= RECURSIVE RELATIONSHIP: PREREQUISITE (Course Unary) ================= -->
+            <!-- Loop line from Course top-right back to Course bottom-right -->
+            <path d="M 850 215 C 930 215, 960 170, 960 224 C 960 278, 930 235, 850 235" fill="none" stroke="#6b359c" stroke-width="1.8"/>
+            <polygon points="960,210 975,224 960,238 945,224" fill="#f4ecfb" stroke="#6b359c" stroke-width="1.5"/>
+            <text x="960" y="252" text-anchor="middle" font-size="9" font-weight="bold" fill="#6b359c">Prereq</text>
+            <text x="865" y="210" font-size="10" font-weight="bold" fill="#6b359c">course (N)</text>
+            <text x="865" y="250" font-size="10" font-weight="bold" fill="#6b359c">prereq (M)</text>
+
+            <!-- Annotations box inside diagram -->
+            <g transform="translate(40, 375)">
+              <rect width="940" height="65" rx="6" fill="#ffffff" stroke="#cbd5e4" stroke-width="1"/>
+              <text x="20" y="24" font-size="11" font-weight="bold" fill="#15396f">🔑 ถอดรหัสแผนภาพนี้สู่ Relational Schema:</text>
+              <text x="20" y="44" font-size="10.5" font-family="monospace" fill="#11213a">
+                1. Department(<u>dept_id</u>, dept_name, building)
+                2. Student(<u>student_id</u>, first_name, last_name, dob, dept_id FK)  [age ไม่เก็บ!]
+              </text>
+              <text x="530" y="44" font-size="10.5" font-family="monospace" fill="#11213a">
+                3. Student_Phones(<u>student_id FK, phone_no</u>)
+                4. Course(<u>course_id</u>, title, credits)
+              </text>
+              <text x="20" y="58" font-size="10.5" font-family="monospace" fill="#11213a">
+                5. Enrolls(<u>student_id FK, course_id FK, semester</u>, grade)
+                6. Prereq(<u>course_id FK, prereq_id FK</u>)
+              </text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- SCENARIO 2: HR & COMPANY WITH WEAK ENTITY -->
+      <div class="panel panel--yellow" style="margin-bottom: 32px;">
+        <div class="diagram-title">
+          <span>👥 ตัวอย่างที่ 2: ระบบพนักงานและผู้ติดตาม (Company HR &amp; Weak Entity)</span>
+          <span style="font-size: .85rem; padding: 4px 10px; background: var(--yellow-soft); color: #8a6500; border-radius: 999px;">เน้น Weak Entity + Identifying Rel + 1:1 Manager</span>
+        </div>
+        <p style="font-size: .95rem; color: var(--muted); margin-bottom: 16px;">
+          <strong>โจทย์สถานการณ์:</strong> บริษัทมีพนักงาน (Employee) และแผนก (Department). พนักงานแต่ละคนสังกัด 1 แผนก (1:N) และแผนกแต่ละแผนกมีพนักงาน 1 คนเป็น <strong>ผู้จัดการ (Manager)</strong> (1:1 พร้อมวันที่เริ่มรับตำแหน่ง <code>start_date</code> และ Total Participation ฝั่ง Department เพราะทุกแผนกต้องมีหัวหน้า). พนักงานสามารถมี <strong>ผู้ติดตาม (Dependent)</strong> เช่น บุตร/คู่สมรส ซึ่งถือเป็น <em>Weak Entity</em> เพราะไม่มีรหัสสากล แต่มีชื่อผู้ติดตาม (<code>dep_name</code> เป็น Partial Key) และเพศ/วันเกิด.
+        </p>
+
+        <!-- SVG Diagram for HR Weak Entity -->
+        <div class="diagram-container">
+          <svg width="980" height="380" viewBox="0 0 980 380" style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
+            <rect width="980" height="380" fill="#fffdf9" rx="8" stroke="#f2e2be" stroke-width="1"/>
+
+            <!-- ================= ENTITY: DEPARTMENT ================= -->
+            <rect x="50" y="160" width="130" height="48" rx="4" fill="#fff7cf" stroke="#d99b00" stroke-width="2"/>
+            <text x="115" y="189" text-anchor="middle" font-weight="bold" font-size="14" fill="#5c4100">Department</text>
+
+            <!-- dept_id PK -->
+            <line x1="115" y1="160" x2="115" y2="100" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="115" cy="100" rx="38" ry="16" fill="#fff7cf" stroke="#d99b00" stroke-width="1.5"/>
+            <text x="115" y="104" text-anchor="middle" font-size="11" font-weight="bold" fill="#5c4100" text-decoration="underline">dnumber</text>
+
+            <!-- ================= RELATIONSHIP 1: WORKS_FOR (1:N) ================= -->
+            <line x1="180" y1="174" x2="270" y2="174" stroke="#11213a" stroke-width="1.5"/>
+            <text x="195" y="165" font-size="12" font-weight="bold" fill="#d99b00">1</text>
+            <polygon points="300,154 330,174 300,194 270,174" fill="#ffffff" stroke="#d99b00" stroke-width="1.8"/>
+            <text x="300" y="178" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#5c4100">Works_For</text>
+            <line x1="330" y1="174" x2="420" y2="174" stroke="#11213a" stroke-width="1.5"/>
+            <text x="400" y="165" font-size="12" font-weight="bold" fill="#d99b00">N</text>
+
+            <!-- ================= RELATIONSHIP 2: MANAGES (1:1) ================= -->
+            <!-- Arc path from Department to Employee on top -->
+            <line x1="180" y1="194" x2="220" y2="240" stroke="#2157a6" stroke-width="1.5"/>
+            <!-- Double line for Department Total Participation in Manages -->
+            <line x1="176" y1="197" x2="216" y2="243" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="195" y="240" font-size="11" font-weight="bold" fill="#2157a6">1 (Total)</text>
+
+            <polygon points="260,225 290,245 260,265 230,245" fill="#e9f0fb" stroke="#2157a6" stroke-width="1.8"/>
+            <text x="260" y="249" text-anchor="middle" font-size="10" font-weight="bold" fill="#15396f">Manages</text>
+            <!-- start_date attribute on Manages -->
+            <line x1="260" y1="265" x2="260" y2="305" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="260" cy="305" rx="35" ry="14" fill="#ffffff" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="260" y="309" text-anchor="middle" font-size="9.5" fill="#15396f">start_date</text>
+
+            <line x1="290" y1="245" x2="420" y2="194" stroke="#2157a6" stroke-width="1.5"/>
+            <text x="380" y="240" font-size="11" font-weight="bold" fill="#2157a6">1 (Partial)</text>
+
+            <!-- ================= ENTITY: EMPLOYEE ================= -->
+            <rect x="420" y="160" width="130" height="48" rx="4" fill="#fff7cf" stroke="#d99b00" stroke-width="2"/>
+            <text x="485" y="189" text-anchor="middle" font-weight="bold" font-size="14" fill="#5c4100">Employee</text>
+
+            <!-- ssn PK -->
+            <line x1="485" y1="160" x2="485" y2="100" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="485" cy="100" rx="30" ry="16" fill="#fff7cf" stroke="#d99b00" stroke-width="1.5"/>
+            <text x="485" y="104" text-anchor="middle" font-size="11" font-weight="bold" fill="#5c4100" text-decoration="underline">ssn</text>
+
+            <!-- ================= IDENTIFYING RELATIONSHIP: DEPENDENTS_OF (Weak Rel) ================= -->
+            <line x1="550" y1="184" x2="620" y2="184" stroke="#11213a" stroke-width="1.5"/>
+            <text x="565" y="175" font-size="12" font-weight="bold" fill="#6b359c">1</text>
+            
+            <!-- Double Diamond -->
+            <polygon points="655,160 690,184 655,208 620,184" fill="#f4ecfb" stroke="#6b359c" stroke-width="2"/>
+            <polygon points="655,166 682,184 655,202 628,184" fill="#ffffff" stroke="#6b359c" stroke-width="1.5"/>
+            <text x="655" y="188" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#421a69">Dep_Of</text>
+
+            <!-- Double Line connecting to Weak Entity (Total Participation) -->
+            <line x1="690" y1="181" x2="760" y2="181" stroke="#bd3d2c" stroke-width="2"/>
+            <line x1="690" y1="187" x2="760" y2="187" stroke="#bd3d2c" stroke-width="2"/>
+            <text x="735" y="175" font-size="12" font-weight="bold" fill="#bd3d2c">N</text>
+
+            <!-- ================= WEAK ENTITY: DEPENDENT ================= -->
+            <!-- Double Rectangle -->
+            <rect x="760" y="156" width="140" height="56" rx="4" fill="#fff0ed" stroke="#bd3d2c" stroke-width="2"/>
+            <rect x="766" y="162" width="128" height="44" rx="2" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="830" y="189" text-anchor="middle" font-weight="bold" font-size="14" fill="#6d1b11">Dependent</text>
+
+            <!-- Dependent Attributes -->
+            <!-- Partial Key: dependent_name (Dashed Underline) -->
+            <line x1="830" y1="156" x2="790" y2="95" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="790" cy="95" rx="48" ry="16" fill="#fff0ed" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="790" y="98" text-anchor="middle" font-size="10" font-weight="bold" fill="#6d1b11">dep_name</text>
+            <line x1="755" y1="104" x2="825" y2="104" stroke="#6d1b11" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+            <!-- sex -->
+            <line x1="830" y1="156" x2="890" y2="95" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="890" cy="95" rx="30" ry="16" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="890" y="99" text-anchor="middle" font-size="10" fill="#11213a">sex</text>
+
+            <!-- relationship -->
+            <line x1="830" y1="212" x2="830" y2="270" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="830" cy="270" rx="42" ry="16" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="830" y="274" text-anchor="middle" font-size="10" fill="#11213a">relationship</text>
+
+            <!-- Schema Breakdown Callout inside SVG -->
+            <g transform="translate(40, 320)">
+              <rect width="900" height="50" rx="6" fill="#ffffff" stroke="#cbd5e4" stroke-width="1"/>
+              <text x="15" y="20" font-size="10.5" font-weight="bold" fill="#5c4100">📌 Relational Schema แปลงจาก Weak Entity &amp; 1:1 Manager:</text>
+              <text x="15" y="38" font-size="10.5" font-family="monospace" fill="#11213a">
+                • Department(<u>dnumber</u>, dname, <strong>mgr_ssn FK UNIQUE</strong>, mgr_start_date)  [1:1 วางฝั่ง Total พร้อม UNIQUE!]
+              </text>
+              <text x="540" y="38" font-size="10.5" font-family="monospace" fill="#11213a">
+                • Dependent(<u><strong>emp_ssn FK, dep_name</strong></u>, sex, relationship)
+              </text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- SCENARIO 3: E-COMMERCE WITH BAD VS GOOD DESIGN -->
+      <div class="panel panel--green">
+        <div class="diagram-title">
+          <span>🛒 ตัวอย่างที่ 3: ระบบสั่งซื้อสินค้า E-Commerce &amp; การแก้ Anti-Pattern</span>
+          <span style="font-size: .85rem; padding: 4px 10px; background: var(--green-soft); color: var(--green); border-radius: 999px;">Junction Table + Quantity/Price Snapshot</span>
+        </div>
+        <p style="font-size: .95rem; color: var(--muted); margin-bottom: 16px;">
+          <strong>โจทย์สถานการณ์:</strong> ลูกค้า (Customer) สามารถสั่งซื้อสินค้าได้หลายใบสั่งซื้อ (Order) ในแต่ละใบสั่งซื้อมีสินค้า (Product) ได้หลายรายการ และสินค้าแต่ละรายการสามารถอยู่ในหลายใบสั่งซื้อได้ (M:N). <em>จุดพลาดที่พบบ่อย (Bad Design):</em> เอา <code>product1, product2, product3</code> ยัดในตาราง Order ทำให้เกิด Repeating Groups และ NULL บานเบอะ. <em>วิธีแก้ที่ถูกต้อง:</em> แตกเป็น 3 ตารางหลักโดยใช้ตารางกลาง <code>Order_Items</code> เพื่อเก็บ <code>quantity</code> และ <code>unit_price_at_purchase</code>.
+        </p>
+
+        <!-- SVG Diagram for E-Commerce -->
+        <div class="diagram-container">
+          <svg width="920" height="260" viewBox="0 0 920 260" style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
+            <rect width="920" height="260" fill="#f8fcf9" rx="8" stroke="#d2ebd9" stroke-width="1"/>
+
+            <!-- Customer -->
+            <rect x="40" y="100" width="120" height="46" rx="4" fill="#e9f6f0" stroke="#26705a" stroke-width="2"/>
+            <text x="100" y="128" text-anchor="middle" font-weight="bold" font-size="13" fill="#124032">Customer</text>
+            <ellipse cx="100" cy="45" rx="38" ry="15" fill="#e9f6f0" stroke="#26705a" stroke-width="1.5"/>
+            <text x="100" y="49" text-anchor="middle" font-size="10" font-weight="bold" fill="#124032" text-decoration="underline">customer_id</text>
+            <line x1="100" y1="100" x2="100" y2="60" stroke="#8493aa" stroke-width="1.2"/>
+
+            <!-- Places Rel -->
+            <line x1="160" y1="123" x2="230" y2="123" stroke="#11213a" stroke-width="1.5"/>
+            <text x="175" y="115" font-size="11" font-weight="bold" fill="#26705a">1</text>
+            <polygon points="260,105 290,123 260,141 230,123" fill="#ffffff" stroke="#26705a" stroke-width="1.8"/>
+            <text x="260" y="127" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#124032">Places</text>
+            <line x1="290" y1="123" x2="360" y2="123" stroke="#11213a" stroke-width="1.5"/>
+            <text x="340" y="115" font-size="11" font-weight="bold" fill="#26705a">N</text>
+
+            <!-- Orders -->
+            <rect x="360" y="100" width="120" height="46" rx="4" fill="#e9f6f0" stroke="#26705a" stroke-width="2"/>
+            <text x="420" y="128" text-anchor="middle" font-weight="bold" font-size="13" fill="#124032">Orders</text>
+            <ellipse cx="420" cy="45" rx="35" ry="15" fill="#e9f6f0" stroke="#26705a" stroke-width="1.5"/>
+            <text x="420" y="49" text-anchor="middle" font-size="10" font-weight="bold" fill="#124032" text-decoration="underline">order_id</text>
+            <line x1="420" y1="100" x2="420" y2="60" stroke="#8493aa" stroke-width="1.2"/>
+
+            <!-- Includes Rel (M:N) -->
+            <line x1="480" y1="123" x2="550" y2="123" stroke="#11213a" stroke-width="1.5"/>
+            <text x="495" y="115" font-size="11" font-weight="bold" fill="#bd3d2c">M</text>
+            <polygon points="580,105 610,123 580,141 550,123" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.8"/>
+            <text x="580" y="127" text-anchor="middle" font-size="9" font-weight="bold" fill="#6d1b11">Contains</text>
+            <!-- Attributes on rel: quantity, price -->
+            <line x1="580" y1="141" x2="545" y2="190" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="545" cy="190" rx="32" ry="14" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="545" y="194" text-anchor="middle" font-size="9" fill="#bd3d2c">quantity</text>
+            <line x1="580" y1="141" x2="615" y2="190" stroke="#8493aa" stroke-width="1.2"/>
+            <ellipse cx="615" cy="190" rx="35" ry="14" fill="#ffffff" stroke="#bd3d2c" stroke-width="1.5"/>
+            <text x="615" y="194" text-anchor="middle" font-size="9" fill="#bd3d2c">unit_price</text>
+
+            <line x1="610" y1="123" x2="680" y2="123" stroke="#11213a" stroke-width="1.5"/>
+            <text x="665" y="115" font-size="11" font-weight="bold" fill="#bd3d2c">N</text>
+
+            <!-- Product -->
+            <rect x="680" y="100" width="120" height="46" rx="4" fill="#e9f6f0" stroke="#26705a" stroke-width="2"/>
+            <text x="740" y="128" text-anchor="middle" font-weight="bold" font-size="13" fill="#124032">Product</text>
+            <ellipse cx="740" cy="45" rx="35" ry="15" fill="#e9f6f0" stroke="#26705a" stroke-width="1.5"/>
+            <text x="740" y="49" text-anchor="middle" font-size="10" font-weight="bold" fill="#124032" text-decoration="underline">product_id</text>
+            <line x1="740" y1="100" x2="740" y2="60" stroke="#8493aa" stroke-width="1.2"/>
+
+            <!-- Result schema box -->
+            <g transform="translate(40, 215)">
+              <rect width="840" height="35" rx="4" fill="#ffffff" stroke="#cbd5e4" stroke-width="1"/>
+              <text x="15" y="22" font-size="10.5" font-family="monospace" fill="#11213a">
+                Schema: Orders(<u>order_id</u>, order_date, customer_id FK) · Order_Items(<u>order_id FK, product_id FK</u>, quantity, unit_price)
+              </text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: CONVERSION TO RELATIONAL SCHEMA -->
+    <section class="section-block" id="conversion">
+      <div class="section-header">
+        <span class="section-header__tag">PART 5: ER TO RELATIONAL SCHEMA RULES</span>
+        <h2 class="section-header__title">5. กฎการแปลง ER Diagram เป็น Relational Schema แบบละเอียด</h2>
+        <p class="section-header__desc">
+          เลือกแท็บด้านล่างเพื่อดูวิธีแปลงแต่ละ Pattern พร้อมตัวอย่างโค้ด SQL DDL (<code>CREATE TABLE</code>) ที่ถูกต้อง
+        </p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab('tab-1n')">1. 1:N Relationship</button>
+        <button class="tab-btn" onclick="openTab('tab-mn')">2. M:N Relationship (Junction)</button>
+        <button class="tab-btn" onclick="openTab('tab-11')">3. 1:1 Relationship (UNIQUE)</button>
+        <button class="tab-btn" onclick="openTab('tab-weak')">4. Weak Entity</button>
+        <button class="tab-btn" onclick="openTab('tab-multi')">5. Multi-valued Attribute</button>
+        <button class="tab-btn" onclick="openTab('tab-comp')">6. Composite Attribute</button>
+      </div>
+
+      <!-- Tab 1: 1:N -->
+      <div id="tab-1n" class="tab-pane active panel panel--primary">
+        <h3>กฎการแปลง 1:N (One-to-Many): นำ PK ฝั่ง 1 ไปเป็น FK ฝั่ง N</h3>
+        <p>
+          ในความสัมพันธ์ 1:N ข้อมูลฝั่ง 1 มีได้หลายแถวในฝั่ง N ดังนั้นให้เอา Primary Key ของตารางฝั่ง 1 ไปสร้างเป็น Foreign Key ในตารางฝั่ง N พร้อมย้าย Attribute บน Relationship (ถ้ามี) ไปไว้ฝั่ง N ด้วย
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>Department(<u>dept_id</u>, dept_name)
+
+Employee(<u>emp_id</u>, name, salary,
+         dept_id,
+         FOREIGN KEY (dept_id) REFERENCES Department(dept_id))</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Department (
+  dept_id INT PRIMARY KEY,
+  dept_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Employee (
+  emp_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  dept_id INT NOT NULL,
+  FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: M:N -->
+      <div id="tab-mn" class="tab-pane panel panel--green">
+        <h3>กฎการแปลง M:N (Many-to-Many): สร้าง Junction Table ใหม่เสมอ</h3>
+        <p>
+          ห้ามนำ FK ไปยัดในตารางใดตารางหนึ่ง เพราะจะเกิด Multiple Values หรือแถวซ้ำ ให้สร้าง <strong>Junction Table (ตารางกลาง)</strong> ที่มี Foreign Key จากทั้ง 2 ตารางรวมกันเป็น <strong>Composite Primary Key</strong>
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>Student(<u>student_id</u>, name)
+Course(<u>course_id</u>, title, credits)
+
+Enrollment(<u>student_id, course_id</u>, grade,
+  FOREIGN KEY (student_id) REFERENCES Student(student_id),
+  FOREIGN KEY (course_id) REFERENCES Course(course_id),
+  PRIMARY KEY (student_id, course_id))</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Enrollment (
+  student_id INT,
+  course_id INT,
+  grade VARCHAR(2),
+  PRIMARY KEY (student_id, course_id),
+  FOREIGN KEY (student_id) REFERENCES Student(student_id) ON DELETE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: 1:1 -->
+      <div id="tab-11" class="tab-pane panel panel--yellow">
+        <h3>กฎการแปลง 1:1 (One-to-One): วาง FK ฝั่ง Total + ใส่ UNIQUE เสมอ</h3>
+        <p>
+          สามารถวาง FK ฝั่งใดก็ได้ แต่วิธีที่ดีที่สุดคือ <strong>วางในฝั่ง Total Participation</strong> (ฝั่งที่ถูกบังคับว่าต้องมีคู่เสมอ) เพื่อหลีกเลี่ยงค่า <code>NULL</code> และ<strong>ต้องระบุเงื่อนไข <code>UNIQUE</code> บนคอลัมน์ FK เสมอ</strong> มิฉะนั้น DBMS จะยอมให้กลายเป็น 1:N
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>Person(<u>person_id</u>, name)
+
+Passport(<u>passport_no</u>, issue_date,
+         person_id UNIQUE NOT NULL,
+         FOREIGN KEY (person_id) REFERENCES Person(person_id))</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Passport (
+  passport_no VARCHAR(20) PRIMARY KEY,
+  issue_date DATE NOT NULL,
+  person_id INT UNIQUE NOT NULL,
+  FOREIGN KEY (person_id) REFERENCES Person(person_id)
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Weak Entity -->
+      <div id="tab-weak" class="tab-pane panel panel--purple">
+        <h3>กฎการแปลง Weak Entity: Owner PK (FK) + Partial Key = Composite PK</h3>
+        <p>
+          สร้างตารางสำหรับ Weak Entity โดยดึง Primary Key ของ Owner Entity มาเป็น Foreign Key และนำมารวมกับ Partial Key (ขีดเส้นใต้ประ) ของตัวเองกลายเป็น <strong>Composite Primary Key</strong>
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>Employee(<u>emp_id</u>, name)
+
+Dependent(<u>emp_id, dep_name</u>, birth_date, relationship,
+  PRIMARY KEY (emp_id, dep_name),
+  FOREIGN KEY (emp_id) REFERENCES Employee(emp_id)
+    ON DELETE CASCADE)</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Dependent (
+  emp_id INT,
+  dep_name VARCHAR(100),
+  birth_date DATE,
+  relationship VARCHAR(50),
+  PRIMARY KEY (emp_id, dep_name),
+  FOREIGN KEY (emp_id) REFERENCES Employee(emp_id)
+    ON DELETE CASCADE
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Multi-valued Attribute -->
+      <div id="tab-multi" class="tab-pane panel panel--red">
+        <h3>กฎการแปลง Multi-valued Attribute: แตกเป็นตารางใหม่เสมอ!</h3>
+        <p>
+          เนื่องจาก Relational Model ไม่อนุญาตให้เก็บ Array หรือค่านิยามหลายค่าใน 1 ช่องคอลัมน์ (ตามกฎ 1NF) จึงต้องสร้างตารางใหม่เก็บ <code>(Owner PK FK, attribute_value)</code> เป็น Composite Primary Key
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>Customer(<u>cust_id</u>, name, email)
+
+Customer_Phones(<u>cust_id, phone_number</u>,
+  PRIMARY KEY (cust_id, phone_number),
+  FOREIGN KEY (cust_id) REFERENCES Customer(cust_id)
+    ON DELETE CASCADE)</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Customer_Phones (
+  cust_id INT,
+  phone_number VARCHAR(20),
+  PRIMARY KEY (cust_id, phone_number),
+  FOREIGN KEY (cust_id) REFERENCES Customer(cust_id)
+    ON DELETE CASCADE
+);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 6: Composite Attribute -->
+      <div id="tab-comp" class="tab-pane panel panel--primary">
+        <h3>กฎการแปลง Composite Attribute: แตกเป็นคอลัมน์ย่อยในตารางเดิม (ไม่ต้องสร้างตารางใหม่)</h3>
+        <p>
+          Attribute ที่แตกกิ่งก้านสาขา เช่น <code>Address(street, city, zipcode)</code> หรือ <code>Name(first_name, last_name)</code> ให้ยุบ parent attribute ทิ้ง แล้วนำ sub-attributes ทั้งหมดมาเป็นคอลัมน์ธรรมดาในตารางเดิม
+        </p>
+        <div class="grid-2">
+          <div>
+            <strong>Relational Schema Notation:</strong>
+            <pre><code>-- ยุบ Address ทิ้ง แล้วแตกคอลัมน์:
+Customer(<u>cust_id</u>, first_name, last_name,
+         street, city, zipcode)</code></pre>
+          </div>
+          <div>
+            <strong>SQL DDL Implementation:</strong>
+            <pre><code>CREATE TABLE Customer (
+  cust_id INT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  street VARCHAR(150),
+  city VARCHAR(50),
+  zipcode VARCHAR(10)
+);</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: INTERACTIVE SIMULATOR -->
+    <section class="section-block" id="simulator">
+      <div class="section-header">
+        <span class="section-header__tag">PART 6: INTERACTIVE LAB</span>
+        <h2 class="section-header__title">6. เครื่องมือทดลองจำลอง Cardinality และการแปลง Schema สดๆ</h2>
+        <p class="section-header__desc">
+          ลองเลือกความสัมพันธ์ระหว่าง <strong>Entity A</strong> และ <strong>Entity B</strong> เพื่อดูว่าผลลัพธ์ Cardinality, แผนภาพ ER Diagram และ Schema ทางการจะเป็นอย่างไร
+        </p>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-controls">
+          <div class="sim-control-group">
+            <label for="ruleA">1. จากมุมมองของ A (Entity A 1 ตัว มี B ได้กี่ตัว?):</label>
+            <select id="ruleA" class="sim-select" onchange="updateSim()">
+              <option value="1">A 1 ตัว มี B ได้สูงสุด 1 ตัว (At most 1 / Single)</option>
+              <option value="N" selected>A 1 ตัว มี B ได้หลายตัว (Many / Multiple)</option>
+            </select>
+          </div>
+          <div class="sim-control-group">
+            <label for="ruleB">2. จากมุมมองของ B (Entity B 1 ตัว สังกัด A ได้กี่ตัว?):</label>
+            <select id="ruleB" class="sim-select" onchange="updateSim()">
+              <option value="1" selected>B 1 ตัว สังกัด A ได้สูงสุด 1 ตัว (At most 1 / Single)</option>
+              <option value="N">B 1 ตัว สังกัด A ได้หลายตัว (Many / Multiple)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="sim-display" class="sim-result">
+          <!-- Dynamic JS will populate this -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: 10 COMMON EXAM PITFALLS -->
+    <section class="section-block" id="pitfalls">
+      <div class="section-header">
+        <span class="section-header__tag">PART 7: EXAM TRAPS &amp; PITFALLS</span>
+        <h2 class="section-header__title">7. 10 จุดผิดที่ห้ามทำเด็ดขาดในห้องสอบ (Drawing Pitfalls)</h2>
+        <p class="section-header__desc">
+          รวบรวมข้อผิดพลาดที่อาจารย์ตรวจข้อสอบแล้วหักคะแนนบ่อยที่สุด อ่านทบทวนก่อนเข้าห้องสอบ!
+        </p>
+      </div>
+
+      <div class="pitfall-list">
+        <div class="pitfall-item">
+          <h4>❌ 1. ลากเส้นข้าวหลามตัดเชื่อมกับข้าวหลามตัด</h4>
+          <p>Relationship ไม่สามารถเชื่อมกับ Relationship โดยตรงได้ ต้องเชื่อมระหว่าง Entity (สี่เหลี่ยม) กับ Entity เท่านั้น</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 2. ลืมขีดเส้นใต้ Primary Key</h4>
+          <p>ทุก Regular Entity ต้องมี Primary Key ชัดเจน และต้องขีดเส้นใต้ทึบในวงรีเสมอ</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 3. สับสนระหว่าง Partial Key กับ Primary Key ใน Weak Entity</h4>
+          <p>Weak Entity <strong>ไม่มี Primary Key เดี่ยวๆ</strong> ตัวจำแนกข้างในต้องขีด <strong>เส้นใต้ประ</strong> (Partial Key) เท่านั้น</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 4. สร้างคอลัมน์เก็บ Derived Attribute ในตารางจริง</h4>
+          <p>Derived Attribute (วงรีเส้นประ) เช่น <code>age</code> หรือ <code>total</code> ไม่ต้องสร้างเป็นคอลัมน์ใน Relational Schema เพราะคำนวณได้ตอน Query</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 5. เอา Multi-valued Attribute ไปยัดเป็นคอลัมน์เดียว</h4>
+          <p>Multi-valued Attribute (วงรีคู่) เช่น <code>phone_numbers</code> <strong>ต้องแตกเป็นตารางใหม่เสมอ</strong></p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 6. ไม่สร้างตารางกลาง (Junction Table) สำหรับ M:N</h4>
+          <p>ความสัมพันธ์ M:N ห้ามเอา FK ไปแปะในตารางเดิมเด็ดขาด ต้องสร้างตารางกลางที่มี FK ทั้งสองตารางเป็น Composite PK</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 7. ลืมใส่ UNIQUE constraint ใน Foreign Key ของ 1:1</h4>
+          <p>ถ้าแปลงความสัมพันธ์ 1:1 แล้วไม่ใส่ <code>UNIQUE</code> บนคอลัมน์ FK จะทำให้ตารางนั้นกลายเป็น 1:N โดยปริยาย</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 8. วาง FK สลับฝั่งในความสัมพันธ์ 1:N</h4>
+          <p>กฎเหล็กคือ <strong>"เอา PK ฝั่ง 1 ไปวางเป็น FK ฝั่ง N"</strong> (เช่น เอา dept_id ไปใส่ใน Employee ห้ามเอา emp_id ไปใส่ใน Dept)</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 9. ลืมลากเส้นคู่ (Total Participation) ใน Weak Entity</h4>
+          <p>ฝั่ง Weak Entity ที่เชื่อมกับ Identifying Relationship (ข้าวหลามตัดคู่) <strong>ต้องเป็นเส้นคู่เสมอ</strong> เพราะ Weak Entity อยู่คนเดียวไม่ได้</p>
+        </div>
+
+        <div class="pitfall-item">
+          <h4>❌ 10. ลืมเก็บ Relationship Attributes ลงในตารางที่ถูกต้อง</h4>
+          <p>ถ้าเป็น 1:N ให้ย้าย Relationship Attribute ไปไว้ฝั่ง N; ถ้าเป็น M:N ให้ใส่ใน Junction Table</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: DRAWING QUIZ / SELF-TEST -->
+    <section class="section-block" id="quiz">
+      <div class="section-header">
+        <span class="section-header__tag">PART 8: PRACTICE EXAM QUESTIONS</span>
+        <h2 class="section-header__title">8. แบบฝึกหัดวาดและแปลง ER Diagram พร้อมเฉลยละเอียด</h2>
+        <p class="section-header__desc">
+          ลองวิเคราะห์โจทย์ต่อไปนี้ด้วยตนเองก่อน แล้วกดเปิดดูเฉลยเพื่อตรวจคำตอบ
+        </p>
+      </div>
+
+      <!-- Quiz 1 -->
+      <details class="quiz">
+        <summary>โจทย์ที่ 1: ระบบจัดการโครงการวิจัย (Project &amp; Researcher)</summary>
+        <div class="quiz__content">
+          <p><strong>โจทย์:</strong> นักวิจัย (Researcher) แต่ละคนมีรหัสนักวิจัย, ชื่อ, และสาขาความเชี่ยวชาญ สามารถเข้าร่วมโครงการวิจัย (Project) ได้หลายโครงการ และโครงการวิจัยแต่ละโครงการมีนักวิจัยหลายคนเข้าร่วม โดยการเข้าร่วมจะบันทึกบทบาท (Role) และจำนวนชั่วโมงทำงานต่อสัปดาห์ (Hours). โครงการแต่ละโครงการมีหัวหน้าโครงการ (Leader) เพียงคนเดียวซึ่งเป็นนักวิจัยในระบบ</p>
+          <div class="callout callout--info">
+            <strong>เฉลยและวิเคราะห์:</strong><br>
+            1. <strong>Entities:</strong> <code>Researcher(<u>researcher_id</u>, name, expertise)</code> และ <code>Project(<u>project_id</u>, title, budget)</code><br>
+            2. <strong>Relationships:</strong>
+               • <code>Participates</code> (M:N) ระหว่าง Researcher และ Project พร้อม Attributes: <code>role</code>, <code>hours</code><br>
+               • <code>Leads</code> (1:1 หรือ 1:N) ระหว่าง Researcher (1) และ Project (1 Leader ต่อ Project, Total ฝั่ง Project)<br>
+            3. <strong>Relational Schema:</strong>
+               <pre><code>Researcher(<u>researcher_id</u>, name, expertise)
+Project(<u>project_id</u>, title, budget, leader_id FK NOT NULL)
+Project_Participation(<u>researcher_id FK, project_id FK</u>, role, hours)</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <!-- Quiz 2 -->
+      <details class="quiz">
+        <summary>โจทย์ที่ 2: ระบบหอพักและห้องพักพร้อมประวัติการซ่อมบำรุง (Dorm &amp; Maintenance Weak Entity)</summary>
+        <div class="quiz__content">
+          <p><strong>โจทย์:</strong> หอพัก (Dormitory) มีรหัสหอพัก (<code>dorm_id</code> PK) และชื่อหอพัก มีห้องพัก (Room) หลายห้อง โดยห้องพักไม่มีรหัสสากลแต่ใช้เลขห้อง (<code>room_no</code>) ภายในหอพักนั้น และมีประเภทห้อง (<code>type</code>). แต่ละห้องอาจมีการแจ้งซ่อม (Maintenance) ได้หลายครั้ง</p>
+          <div class="callout callout--info">
+            <strong>เฉลยและวิเคราะห์:</strong><br>
+            1. <code>Room</code> เป็น <strong>Weak Entity</strong> ต่อ <code>Dormitory</code> (1:N, Identifying Relationship, <code>room_no</code> เป็น Partial Key ขีดเส้นใต้ประ)<br>
+            2. <code>Maintenance</code> เป็น Weak Entity ต่อ <code>Room</code> หรือเป็น Regular Entity ขึ้นกับการออกแบบ<br>
+            3. <strong>Relational Schema:</strong>
+               <pre><code>Dormitory(<u>dorm_id</u>, dorm_name)
+Room(<u>dorm_id FK, room_no</u>, type, PRIMARY KEY(dorm_id, room_no))
+Maintenance(<u>dorm_id FK, room_no FK, request_no</u>, description, request_date)</code></pre>
+          </div>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div>
+        <strong style="color: white; font-size: 1.1rem; display: block; margin-bottom: 4px;">Database Systems Midterm 2026</strong>
+        <p style="margin: 0; font-size: .88rem;">สื่อการสอนและเตรียมสอบวิชาฐานข้อมูล คณะวิศวกรรมศาสตร์ มหาวิทยาลัยขอนแก่น</p>
+      </div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <a href="index.html" style="color: #dce6f4; text-decoration: none; font-weight: 600;">🏠 หน้าหลัก</a>
+        <a href="database-midterm-study-guide.html" style="color: #dce6f4; text-decoration: none; font-weight: 600;">📖 คู่มือฉบับเต็ม</a>
+        <a href="cheat-sheet.html" style="color: #dce6f4; text-decoration: none; font-weight: 600;">📑 Cheat Sheet</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script for Interactive Simulators & Tabs -->
+  <script>
+    // Tab switching logic
+    function openTab(tabId) {
+      const panes = document.querySelectorAll('.tab-pane');
+      const btns = document.querySelectorAll('.tab-btn');
+      
+      panes.forEach(pane => pane.classList.remove('active'));
+      btns.forEach(btn => btn.classList.remove('active'));
+      
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) targetPane.classList.add('active');
+      
+      event.currentTarget.classList.add('active');
+    }
+
+    // Interactive Simulator Logic
+    function updateSim() {
+      const ruleA = document.getElementById('ruleA').value;
+      const ruleB = document.getElementById('ruleB').value;
+      const display = document.getElementById('sim-display');
+
+      let ratio = '';
+      let explanation = '';
+      let schemaExample = '';
+      let badgeColor = '';
+
+      if (ruleA === '1' && ruleB === '1') {
+        ratio = '1 : 1 (One-to-One)';
+        badgeColor = '#2157a6';
+        explanation = 'Entity A แต่ละตัวจับคู่กับ B ได้ไม่เกิน 1 ตัว และ B แต่ละตัวจับคู่กับ A ได้ไม่เกิน 1 ตัว';
+        schemaExample = 'วาง FK ฝั่งใดฝั่งหนึ่ง (เลือกฝั่ง Total) และใส่ UNIQUE เช่น:\nTable_A(<u>a_id</u>, ...)\nTable_B(<u>b_id</u>, a_id FK UNIQUE, ...)';
+      } else if (ruleA === 'N' && ruleB === '1') {
+        ratio = '1 : N (One-to-Many: A คือฝั่ง 1, B คือฝั่ง N)';
+        badgeColor = '#8a6500';
+        explanation = 'A หนึ่งตัวมี B ได้หลายตัว (ฝั่ง B มี N) แต่ B หนึ่งตัวสังกัด A ได้เพียง 1 ตัว (ฝั่ง A มี 1)';
+        schemaExample = 'กฎเหล็ก: เอา PK ฝั่ง 1 (a_id) ไปใส่เป็น Foreign Key ในฝั่ง N (Table_B):\nTable_A(<u>a_id</u>, ...)\nTable_B(<u>b_id</u>, a_id FK, ...)';
+      } else if (ruleA === '1' && ruleB === 'N') {
+        ratio = 'N : 1 (Many-to-One: A คือฝั่ง N, B คือฝั่ง 1)';
+        badgeColor = '#8a6500';
+        explanation = 'A หลายตัวสังกัด B ตัวเดียวกันได้ แต่ B แต่ละตัวมี A ได้เพียง 1 ตัว';
+        schemaExample = 'เอา PK ฝั่ง 1 (b_id) ไปใส่เป็น Foreign Key ในฝั่ง N (Table_A):\nTable_A(<u>a_id</u>, b_id FK, ...)\nTable_B(<u>b_id</u>, ...)';
+      } else {
+        ratio = 'M : N (Many-to-Many)';
+        badgeColor = '#26705a';
+        explanation = 'A หนึ่งตัวมี B ได้หลายตัว และ B หนึ่งตัวก็มี A ได้หลายตัว';
+        schemaExample = 'ต้องสร้าง Junction Table (ตารางกลาง) ใหม่เสมอ มี FK ทั้งสองฝั่งเป็น Composite PK:\nTable_A(<u>a_id</u>, ...)\nTable_B(<u>b_id</u>, ...)\nTable_AB(<u>a_id FK, b_id FK</u>, PRIMARY KEY(a_id, b_id))';
+      }
+
+      display.innerHTML = `
+        <div style="font-size: 1.4rem; font-weight: 800; color: ${badgeColor}; margin-bottom: 8px;">
+          อัตราส่วนที่ได้: ${ratio}
+        </div>
+        <p style="margin: 0 0 12px; font-size: .95rem; color: #53627a;">${explanation}</p>
+        <div style="text-align: left; max-width: 600px; margin: 0 auto; background: #0c1c32; color: #e6edf3; padding: 14px 18px; border-radius: 6px; font-family: var(--mono); font-size: .88rem; white-space: pre-wrap;">${schemaExample}</div>
+      `;
+    }
+
+    // Run on load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSim();
+    });
+  </script>
+</body>
+</html>
